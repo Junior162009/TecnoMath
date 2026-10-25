@@ -8,7 +8,7 @@ on:
       - 'scripts/validate-i18n.mjs'
       - '.github/workflows/validate-i18n.yml'
   push:
-    branches: [feat/global-i18n-final]
+    branches: [main, 'feat/global-i18n-final', 'fix/global-i18n-runtime-validation']
     paths:
       - 'locales/**'
       - 'js/i18n.js'
