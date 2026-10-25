@@ -97,50 +97,70 @@ async def scrape_live():
                 question = (await card.locator(".question, [data-question-text], h2, h3").first.inner_text(timeout=2500)).strip()
                 opts = await card.locator(".answer, button[data-answer], .answers button").all_inner_texts()
                 opts = [re.sub(r"^[A-Da-d]\s*", "", s).strip() for s in opts]
-                if question and len(opts) >= 2:
+                buttons = card.locator(".answer, button[data-answer], .answers button")
+                if question and len(opts) >= 2 and await buttons.count() == len(opts):
+                    # Never click an answer during extraction: that mutates the live game state.
+                    correct = None
+                    for answer_index, button in enumerate(await buttons.all()):
+                        classes = ((await button.get_attribute("class")) or "").split()
+                        if "correct" in classes:
+                            correct = answer_index
+                            break
+                    if correct is None:
+                        print(f"SKIP card={index}: no verified correct-answer state; question={question!r}")
+                        continue
                     bg = ROOT / f".live-card-{index}.png"
                     await card.screenshot(path=str(bg), timeout=10000)
-                    correct = None
                     explanation = ""
-                    # Let the real game reveal its own correct answer; never calculate or guess it.
-                    buttons = card.locator(".answer, button[data-answer], .answers button")
-                    if await buttons.count() >= 2:
-                        await buttons.first.click(timeout=2500)
-                        await page.wait_for_timeout(180)
-                        for answer_index, button in enumerate(await buttons.all()):
-                            classes = (await button.get_attribute("class")) or ""
-                            if "correct" in classes.split():
-                                correct = answer_index
-                                break
-                        try:
-                            explanation = (await card.locator(".feedback").inner_text(timeout=1000)).strip()
-                            explanation = re.sub(r"^(✨ ¡Correcto! \+10 puntos\. |💡 Sigue aprendiendo\. |¡Reto superado! |Respuesta guardada\. )", "", explanation)
-                        except Exception:
-                            explanation = ""
-                    # The screenshot and answer feedback come from the live published game.
+                    try:
+                        explanation = (await card.locator(".feedback").inner_text(timeout=1000)).strip()
+                    except Exception:
+                        pass
+                    print(f"QUESTION card={index} options={len(opts)} verified_correct_index={correct}")
                     items.append({"question": question, "options": opts[:4], "background": str(bg),
                                   "category": "Reto educativo", "correct": correct, "explanation": explanation})
             except Exception:
                 continue
-        # If a page version exposes a global data bank, read it only when DOM cards are unavailable.
+        # The live game's authoritative question bank is a page-local const, not window.questions.
+        # Read its literal data without clicking choices or mutating gameplay state.
         if not items:
             data = await page.evaluate("""() => {
-              const arr = window.questions || window.QUESTIONS || window.questionBank;
-              if (!Array.isArray(arr)) return [];
-              return arr.map(q => ({question:q.question||q.text, options:q.answers||q.options,
-                correct:Number.isInteger(q.correct)?q.correct:(Number.isInteger(q.correctIndex)?q.correctIndex:null),
-                explanation:q.explain||q.explanation||'',category:q.category||'Reto educativo'}))
-                .filter(q=>q.question && Array.isArray(q.options) && q.options.length>=2);
+              const source = [...document.scripts].map(s => s.textContent || '').join('\\n');
+              const match = source.match(/const\\s+questions\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*;/);
+              if (!match) return [];
+              const literal = match[1];
+              if (literal.includes('=>') || /\\bfunction\\b|\\bimport\\b|\\beval\\b/.test(literal)) return [];
+              try {
+                const parsed = Function('"use strict"; return (' + literal + ')')();
+                return Array.isArray(parsed) ? parsed.map(q => ({
+                  question: q.question, options: q.answers, correct: q.correct,
+                  explanation: q.explain || '', category: q.category || 'Reto educativo'
+                })).filter(q => typeof q.question === 'string' && Array.isArray(q.options) &&
+                  q.options.length >= 2 && Number.isInteger(q.correct) &&
+                  q.correct >= 0 && q.correct < q.options.length) : [];
+              } catch (_) { return []; }
             }""")
             if data:
                 shot = ROOT / ".live-page.png"
                 await page.screenshot(path=str(shot), full_page=True)
                 items = [{**q, "background": str(shot), "options": q["options"][:4]} for q in data]
+                print(f"QUESTION_BANK source=published-inline-script verified={len(items)}")
         await browser.close()
-        if len(items) < 5:
-            raise RuntimeError(f"La página real solo expuso {len(items)} preguntas legibles; se requieren 5. Revisa selectores o que la página esté disponible: {BASE_URL}")
-        # Correctness is sourced from the live page only; never invent an answer if the page doesn't expose it.
-        return items
+        valid = []
+        for item in items:
+            opts, correct = item.get("options"), item.get("correct")
+            if (isinstance(item.get("question"), str) and item["question"].strip()
+                and isinstance(opts, list) and 2 <= len(opts) <= 4
+                and all(isinstance(v, str) and v.strip() for v in opts)
+                and isinstance(correct, int) and not isinstance(correct, bool)
+                and 0 <= correct < len(opts)):
+                valid.append(item)
+            else:
+                print(f"SKIP invalid/unverified question: {item.get('question', '<sin pregunta>')!r}")
+        print(f"EXTRACTION total={len(items)} verified_valid={len(valid)} required=5")
+        if len(valid) < 5:
+            raise RuntimeError(f"Solo hay {len(valid)} preguntas con respuesta verificada; se requieren 5. No se generarán videos incompletos. URL: {BASE_URL}")
+        return valid
 
 def duration(path):
     r = subprocess.run(["ffprobe","-v","error","-show_entries","format=duration","-of","default=noprint_wrappers=1:nokey=1",str(path)],capture_output=True,text=True,check=True)
@@ -163,12 +183,11 @@ async def main():
         options = q["options"]
         correct = q.get("correct")
         explanation = q.get("explanation") or "Piensa en la pregunta, comprueba tu respuesta y sigue practicando en TecnoMath."
-        if not isinstance(correct, int) or correct < 0 or correct >= len(options):
-            # The public page's visible feedback can disclose the answer; don't guess.
-            correct = None
+        if (not isinstance(correct, int) or isinstance(correct, bool) or correct < 0
+                or correct >= len(options) or not all(isinstance(v, str) and v.strip() for v in options)):
+            raise RuntimeError(f"Pregunta {number} sin respuesta correcta verificada; se cancela.")
         first_text = f"¡Reto TecnoMath! {question} " + " ".join(f"Opción {chr(65+i)}: {v}." for i,v in enumerate(options)) + " Tienes unos segundos para pensar."
-        reveal_text = ("La respuesta correcta es " + options[correct] + ". " + explanation + " Entra a tecnomath.online y acepta el siguiente reto."
-                       if correct is not None else "¿Ya tienes tu respuesta? Entra a TecnoMath Retos para comprobarla y desafiar a tus amigos.")
+        reveal_text = "La respuesta correcta es " + options[correct] + ". " + explanation + " Entra a tecnomath.online y acepta el siguiente reto."
         a, b = work/"pregunta.mp3", work/"respuesta.mp3"
         await synthesize(first_text, a)
         await synthesize(reveal_text, b)
@@ -194,9 +213,25 @@ async def main():
         slug = re.sub(r"[^a-z0-9]+","-",question.lower()).strip("-")[:48] or f"reto-{number}"
         out = ROOT/f"{day}-tecnomath-reto-{number}-{slug}.mp4"
         run(["ffmpeg","-y","-i",str(joined),"-i",str(voice),"-map","0:v:0","-map","1:a:0","-c:v","libx264","-preset","veryfast","-crf","24","-c:a","aac","-b:a","128k","-shortest","-movflags","+faststart","-pix_fmt","yuv420p",str(out)])
-        manifest.append({"file":out.name,"question":question,"has_verified_answer":correct is not None,"source":BASE_URL})
+        probe = subprocess.run(["ffprobe","-v","error","-show_entries","stream=codec_name,codec_type,width,height","-show_entries","format=duration","-of","json",str(out)],capture_output=True,text=True,check=True)
+        media = json.loads(probe.stdout)
+        streams = media.get("streams", [])
+        video = next((s for s in streams if s.get("codec_type") == "video"), None)
+        audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+        seconds = float(media.get("format", {}).get("duration", 0))
+        if not video or video.get("codec_name") != "h264" or video.get("width") != WIDTH or video.get("height") != HEIGHT:
+            raise RuntimeError(f"Validación de video fallida: {out.name}: {media}")
+        if not audio or audio.get("codec_name") != "aac" or seconds <= 0:
+            raise RuntimeError(f"Validación de audio/duración fallida: {out.name}: {media}")
+        manifest.append({"file":out.name,"question":question,"answer":options[correct],"has_verified_answer":True,"duration_seconds":round(seconds,2),"width":WIDTH,"height":HEIGHT,"video_codec":"h264","audio_codec":"aac","source":BASE_URL})
         print(f"CREATED {out}")
-    (ROOT/"manifest.json").write_text(json.dumps({"date_utc":day,"source":BASE_URL,"count":len(manifest),"videos":manifest},ensure_ascii=False,indent=2),encoding="utf-8")
+    if len(manifest) != 5 or any(not (ROOT / item["file"]).is_file() for item in manifest):
+        raise RuntimeError(f"Se esperaban cinco MP4 existentes; se encontraron {len(manifest)}.")
+    manifest_path = ROOT/"manifest.json"
+    manifest_path.write_text(json.dumps({"date_utc":day,"source":BASE_URL,"count":len(manifest),"videos":manifest},ensure_ascii=False,indent=2),encoding="utf-8")
+    parsed = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if parsed.get("count") != 5 or len(parsed.get("videos", [])) != 5:
+        raise RuntimeError("manifest.json no contiene exactamente cinco videos.")
     # Clean temporary screenshots and intermediate assets; retain only deliverables and manifest.
     for p in ROOT.iterdir():
         if p.name.startswith(".live-") or p.name.startswith(".work-"):
