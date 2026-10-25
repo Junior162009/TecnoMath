@@ -1,0 +1,54 @@
+name: Inject TecnoMath global i18n
+
+on:
+  push:
+    branches: [feat/global-i18n]
+    paths:
+      - '**/*.html'
+      - '.github/workflows/inject-global-i18n.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject i18n runtime into HTML documents
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          marker = '<script src="/js/i18n.js" defer></script>'
+          changed = []
+          for path in Path('.').rglob('*.html'):
+              if any(part in {'.git', 'node_modules'} for part in path.parts):
+                  continue
+              text = path.read_text(encoding='utf-8')
+              if '/js/i18n.js' in text:
+                  continue
+              if re.search(r'</head>', text, flags=re.I):
+                  text = re.sub(r'</head>', f'    {marker}\n</head>', text, count=1, flags=re.I)
+              else:
+                  text = marker + '\n' + text
+              path.write_text(text, encoding='utf-8')
+              changed.append(str(path))
+          print(f'Injected i18n into {len(changed)} HTML files')
+          for item in changed:
+              print(item)
+          PY
+      - name: Commit migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add '*.html' '**/*.html' || true
+          if git diff --cached --quiet; then
+            echo 'No HTML files required migration.'
+            exit 0
+          fi
+          git commit -m 'feat(i18n): integrate global runtime into HTML pages'
+          git push
