@@ -504,5 +504,32 @@
     "urlType": "external",
     "authorName": "TecnoMath",
     "grade": "Todos"
+  },
+  {
+    "id": "tecnomath-retos",
+    "name": "🎯 TecnoMath Retos",
+    "desc": "Minijuego de preguntas rápidas con videos de retos de YouTube y Shorts.",
+    "description": "Responde desafíos educativos, gana puntos y añade un video por reto.",
+    "url": "games/tecnomath-retos/index.html",
+    "imageUrl": "games/tecnomath-retos/icon.svg",
+    "icon": "🎯",
+    "category": "educacion",
+    "deviceCompatibility": "both",
+    "evento": null,
+    "sourceType": "internal",
+    "status": "published",
+    "allowVoting": false,
+    "featured": false,
+    "order": 20,
+    "urlType": "internal",
+    "publishDate": "2026-10-25T04:13:30.397Z",
+    "authorName": "TecnoMath",
+    "grade": "Todos",
+    "folder": "games/tecnomath-retos",
+    "folderPath": "games/tecnomath-retos",
+    "entryFile": "index.html",
+    "logoStoragePath": "",
+    "packageStoragePath": "",
+    "packageFileName": ""
   }
 ]
