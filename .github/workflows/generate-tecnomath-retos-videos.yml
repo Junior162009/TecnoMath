@@ -5,6 +5,7 @@ on:
     # 12:00 UTC = 07:00 en Colombia
     - cron: "0 12 * * *"
   workflow_dispatch:
+  pull_request:
 
 permissions:
   contents: read
@@ -81,6 +82,8 @@ jobs:
                   raise SystemExit(f"ERROR: gameplay real/movimiento no verificado en manifest: {path}")
               if not item.get("minigame") or item.get("resolution") != "1080x1920":
                   raise SystemExit(f"ERROR: metadatos obligatorios incompletos en manifest: {path}")
+              if item.get("audio_codec") == "aac" and (not audio or audio.get("codec_name") != "aac"):
+                  raise SystemExit(f"ERROR: el manifiesto declara AAC pero falta el audio AAC: {path}")
               if audio and audio.get("codec_name") != "aac":
                   raise SystemExit(f"ERROR: codec de audio inválido: {path}")
               print(f"VALID {path.name}: {duration:.2f}s H.264 1080x1920 + " + ("AAC" if audio else "sin audio (fallback)"))
