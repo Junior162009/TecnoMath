@@ -25,7 +25,7 @@ async function walk(dir){
     let source;
     try{source=await readFile(path,'utf8')}catch(_){continue}
     sourceFiles++;
-    for(const match of source.matchAll(/data-i18n(?:-placeholder|-title|-aria-label|-html)?\\s*=\\s*["']([^"']+)["']/g)){
+    for(const match of source.matchAll(/data-i18n(?:-placeholder|-title|-aria-label|-html)?\s*=\s*["']([^"']+)["']/g)){
       const key=match[1].trim();
       if(!key)continue;
       translationKeys++;
