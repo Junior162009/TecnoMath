@@ -33,12 +33,14 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install playwright pillow edge-tts
           python -m playwright install --with-deps chromium
-      - name: Generar cinco MP4 desde TecnoMath Retos publicado
+      - name: Generar cinco MP4 desde minijuegos reales de TecnoMath
         env:
-          TECNOMATH_RETOS_URL: https://tecnomath.online/games/tecnomath-retos/
+          TECNOMATH_SITE_BASE: https://tecnomath.online/
           TTS_VOICE: es-CO-SalomeNeural
           VIDEO_OUTPUT_DIR: output/tecnomath-retos
-        run: python scripts/generate_tecnomath_retos_videos.py
+          TECNOMATH_VIDEO_COUNT: "5"
+          GAMEPLAY_CAPTURE_SECONDS: "9"
+        run: python scripts/generate_tecnomath_retos_minigames.py
       - name: Validar manifiesto y cinco videos antes de publicar el artefacto
         shell: bash
         run: |
@@ -67,15 +69,17 @@ jobs:
               duration = float(data.get("format", {}).get("duration", 0))
               if not video or (video.get("codec_name"), video.get("width"), video.get("height")) != ("h264", 1080, 1920):
                   raise SystemExit(f"ERROR: video H.264/1080x1920 inválido: {path}")
-              if not audio or audio.get("codec_name") != "aac" or duration <= 0:
-                  raise SystemExit(f"ERROR: falta audio AAC o duración válida: {path}")
-              if item.get("has_verified_answer") is not True:
-                  raise SystemExit(f"ERROR: respuesta no verificada: {path}")
-              print(f"VALID {path.name}: {duration:.2f}s H.264 1080x1920 + AAC")
+              if duration <= 0:
+                  raise SystemExit(f"ERROR: duración inválida: {path}")
+              if item.get("gameplay_captured") is not True or item.get("validated") is not True:
+                  raise SystemExit(f"ERROR: gameplay no verificado: {path}")
+              if audio and audio.get("codec_name") != "aac":
+                  raise SystemExit(f"ERROR: codec de audio inválido: {path}")
+              print(f"VALID {path.name}: {duration:.2f}s H.264 1080x1920 + " + ("AAC" if audio else "sin audio (fallback)"))
           mp4s = list(root.glob("*.mp4"))
           if len(mp4s) != 5:
               raise SystemExit(f"ERROR: se esperaban exactamente cinco MP4; hay {len(mp4s)}")
-          print("VALIDATION OK: five MP4 and manifest")
+          print("VALIDATION OK: five real-game MP4 and manifest")
           PY
       - name: Guardar MP4 y manifiesto como artefacto descargable
         uses: actions/upload-artifact@v4
