@@ -50,6 +50,27 @@ def slug(value):
     return value[:60] or "minijuego"
 
 
+def validate_gameplay_motion(path, game_name):
+    """Reject title-only/static captures by comparing sampled real gameplay frames."""
+    cmd = ["ffmpeg", "-v", "error", "-i", str(path), "-vf",
+           "fps=1,scale=64:114:flags=area,format=gray", "-f", "rawvideo", "-"]
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode:
+        raise RuntimeError(f"gameplay_frame_decode_failed game={game_name}: {result.stderr.decode(errors='replace')[-2000:]}")
+    frame_size = 64 * 114
+    raw = result.stdout
+    frames = [raw[i:i + frame_size] for i in range(0, len(raw) - frame_size + 1, frame_size)]
+    if len(frames) < 3:
+        raise RuntimeError(f"gameplay_too_short game={game_name}: only {len(frames)} sampled frames")
+    changed = 0
+    for previous, current in zip(frames, frames[1:]):
+        if sum(a != b for a, b in zip(previous, current)) / frame_size >= 0.02:
+            changed += 1
+    if changed < 2:
+        raise RuntimeError(f"gameplay_static_or_title_only game={game_name}: only {changed} meaningful frame changes")
+    log("GAMEPLAY_MOTION_VALIDATED", name=game_name, sampled_frames=len(frames), meaningful_changes=changed)
+
+
 def ffprobe(path):
     data = json.loads(run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_name,codec_type,width,height", "-show_entries", "format=duration,size", "-of", "json", str(path)]).stdout)
     streams = data.get("streams", [])
@@ -224,11 +245,16 @@ async def render_one(game, number):
     capture = await capture_game(game, work)
     if not capture:
         return None
+    try:
+        validate_gameplay_motion(capture, game["name"])
+    except Exception as exc:
+        log("GAME_ERROR", stage="gameplay_validation", name=game["name"], error=str(exc))
+        return None
     fmt = FORMATS[(number - 1) % len(FORMATS)]
     voice = work / "voice.mp3"
     voice_ok = await synthesize(fmt[1], voice)
     voice_path = voice if voice_ok and voice.exists() and voice.stat().st_size > 1024 else None
-    out = ROOT / f"video-{number:02d}-{slug(game['name'])}.mp4"
+    out = ROOT / f"video-{number:02d}.mp4"
     try:
         render_vertical(capture, voice_path, out, fmt)
         data, video, audio = ffprobe(out)
@@ -241,7 +267,7 @@ async def render_one(game, number):
             raise RuntimeError(f"video_validation_failed: {data}")
         log("VIDEO_RENDERED", file=out.name, game=game["name"], format=fmt[0])
         log("VIDEO_VALIDATED", file=out.name, duration=round(duration, 2), bytes=size, audio=bool(audio))
-        return {"file": out.name, "game": game["name"], "source": game["url"], "entry": game["entry"], "format": fmt[0], "duration_seconds": round(duration, 2), "width": WIDTH, "height": HEIGHT, "video_codec": "h264", "audio_codec": "aac" if voice_path else None, "voice": VOICE if voice_path else None, "gameplay_captured": True, "validated": True}
+        return {"file": out.name, "minigame": game["name"], "game": game["name"], "source": game["url"], "entry": game["entry"], "format": fmt[0], "duration_seconds": round(duration, 2), "width": WIDTH, "height": HEIGHT, "resolution": f"{WIDTH}x{HEIGHT}", "video_codec": "h264", "audio_codec": "aac" if voice_path else None, "voice": VOICE if voice_path else None, "gameplay_captured": True, "gameplay_motion_validated": True, "validated": True, "validation_status": "passed"}
     except Exception as exc:
         log("GAME_ERROR", stage="render_or_validate", name=game["name"], error=str(exc))
         out.unlink(missing_ok=True)
@@ -251,6 +277,11 @@ async def render_one(game, number):
 async def main():
     if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
         raise RuntimeError("FFmpeg/ffprobe no están instalados")
+    # Remove stale deliverables so a failed run cannot reuse previous MP4s.
+    for stale in ROOT.glob("*.mp4"):
+        stale.unlink(missing_ok=True)
+    (ROOT / "manifest.json").unlink(missing_ok=True)
+    (ROOT / "generation-error.log").unlink(missing_ok=True)
     games = discover_games()
     if len(games) < COUNT:
         raise RuntimeError(f"Solo se detectaron {len(games)} minijuegos web candidatos; se requieren {COUNT}")
@@ -272,7 +303,7 @@ async def main():
     if len(manifest) != COUNT:
         raise RuntimeError(f"Solo se validaron {len(manifest)} de {COUNT} videos; no se publicará una tanda incompleta")
     date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    payload = {"date_utc": date, "count": len(manifest), "mode": "real-minigames", "games_discovered": len(games), "videos": manifest}
+    payload = {"date_utc": date, "count": len(manifest), "mode": "real-minigames", "games_discovered": len(games), "validation_status": "passed", "videos": manifest}
     (ROOT / "manifest.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     for p in ROOT.glob(".work-*"):
         shutil.rmtree(p, ignore_errors=True)
@@ -284,4 +315,9 @@ if __name__ == "__main__":
         asyncio.run(main())
     except Exception as exc:
         log("GAME_ERROR", stage="fatal", error=str(exc))
+        try:
+            ROOT.mkdir(parents=True, exist_ok=True)
+            (ROOT / "generation-error.log").write_text(f"{type(exc).__name__}: {exc}\\n", encoding="utf-8")
+        except Exception:
+            pass
         raise
