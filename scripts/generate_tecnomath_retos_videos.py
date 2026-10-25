@@ -121,20 +121,30 @@ async def scrape_live():
                                   "category": "Reto educativo", "correct": correct, "explanation": explanation})
             except Exception:
                 continue
-        # If a page version exposes a global data bank, read it only when DOM cards are unavailable.
+        # The live game's authoritative question bank is a page-local const, not window.questions.
+        # Read its literal data without clicking choices or mutating gameplay state.
         if not items:
             data = await page.evaluate("""() => {
-              const arr = window.questions || window.QUESTIONS || window.questionBank;
-              if (!Array.isArray(arr)) return [];
-              return arr.map(q => ({question:q.question||q.text, options:q.answers||q.options,
-                correct:Number.isInteger(q.correct)?q.correct:(Number.isInteger(q.correctIndex)?q.correctIndex:null),
-                explanation:q.explain||q.explanation||'',category:q.category||'Reto educativo'}))
-                .filter(q=>q.question && Array.isArray(q.options) && q.options.length>=2 && Number.isInteger(q.correct) && q.correct>=0 && q.correct<q.options.length);
+              const source = [...document.scripts].map(s => s.textContent || '').join('\\n');
+              const match = source.match(/const\\s+questions\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*;/);
+              if (!match) return [];
+              const literal = match[1];
+              if (!/^[\\s\\[\\]{}:,.'\"\\w\\-×¿?¡!…·⭐🧮🧩🔬📚🌎🌍]+$/.test(literal)) return [];
+              try {
+                const parsed = Function('"use strict"; return (' + literal + ')')();
+                return Array.isArray(parsed) ? parsed.map(q => ({
+                  question: q.question, options: q.answers, correct: q.correct,
+                  explanation: q.explain || '', category: q.category || 'Reto educativo'
+                })).filter(q => typeof q.question === 'string' && Array.isArray(q.options) &&
+                  q.options.length >= 2 && Number.isInteger(q.correct) &&
+                  q.correct >= 0 && q.correct < q.options.length) : [];
+              } catch (_) { return []; }
             }""")
             if data:
                 shot = ROOT / ".live-page.png"
                 await page.screenshot(path=str(shot), full_page=True)
                 items = [{**q, "background": str(shot), "options": q["options"][:4]} for q in data]
+                print(f"QUESTION_BANK source=published-inline-script verified={len(items)}")
         await browser.close()
         valid = []
         for item in items:
