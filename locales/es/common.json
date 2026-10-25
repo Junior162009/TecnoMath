@@ -1,0 +1,29 @@
+{
+  "meta": {"language":"Español","direction":"ltr"},
+  "common": {
+    "language":"Idioma","selectLanguage":"Seleccionar idioma","changeLanguage":"Cambiar idioma",
+    "home":"Inicio","games":"Juegos","play":"Jugar","start":"Comenzar","continue":"Continuar",
+    "pause":"Pausa","resume":"Continuar","settings":"Configuración","back":"Volver","close":"Cerrar",
+    "save":"Guardar","cancel":"Cancelar","confirm":"Confirmar","loading":"Cargando…","error":"Ha ocurrido un error",
+    "yes":"Sí","no":"No","search":"Buscar","next":"Siguiente","previous":"Anterior","finish":"Finalizar",
+    "score":"Puntuación","points":"Puntos","level":"Nivel","time":"Tiempo","correct":"Correcto","incorrect":"Incorrecto",
+    "results":"Resultados","ranking":"Ranking","vote":"Votar","profile":"Perfil","progress":"Mi progreso",
+    "login":"Acceder","logout":"Cerrar sesión","register":"Registrarse","welcome":"Bienvenido a TecnoMath",
+    "all":"Todos","education":"Educación","retry":"Intentar de nuevo","available":"Disponible",
+    "unavailable":"No disponible","locked":"Juego bloqueado","lockedMessage":"Este juego todavía no está disponible"
+  },
+  "catalog": {
+    "title":"TecnoMath | Plataforma Educativa Interactiva",
+    "subtitle":"Aprende, practica y descubre con TecnoMath",
+    "all":"🌍 TODOS","math":"➕ MATES","ecology":"🌿 ECOLOGÍA","kids":"🐣 INFANTIL",
+    "puzzle":"🧩 PUZZLE","runners":"🏃 CARRERAS","halloween":"🎃 HALLOWEEN"
+  },
+  "game": {
+    "start":"Comenzar juego","instructions":"Instrucciones","tutorial":"Tutorial","question":"Pregunta",
+    "answer":"Respuesta","answers":"Respuestas","correctAnswer":"Respuesta correcta","explanation":"Explicación",
+    "victory":"¡Victoria!","defeat":"Fin del juego","mission":"Misión","objective":"Objetivo",
+    "reward":"Recompensa","completed":"Completado","paused":"Juego en pausa"
+  },
+  "score": {"points":"{points} puntos","final":"Puntuación final: {score}"},
+  "accessibility": {"languageSelector":"Selector de idioma","openMenu":"Abrir menú","closeMenu":"Cerrar menú"}
+}
