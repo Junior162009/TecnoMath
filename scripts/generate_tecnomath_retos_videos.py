@@ -100,9 +100,26 @@ async def scrape_live():
                 if question and len(opts) >= 2:
                     bg = ROOT / f".live-card-{index}.png"
                     await card.screenshot(path=str(bg), timeout=10000)
-                    # Store a card screenshot from the real published page as the visual backdrop.
+                    correct = None
+                    explanation = ""
+                    # Let the real game reveal its own correct answer; never calculate or guess it.
+                    buttons = card.locator(".answer, button[data-answer], .answers button")
+                    if await buttons.count() >= 2:
+                        await buttons.first.click(timeout=2500)
+                        await page.wait_for_timeout(180)
+                        for answer_index, button in enumerate(await buttons.all()):
+                            classes = (await button.get_attribute("class")) or ""
+                            if "correct" in classes.split():
+                                correct = answer_index
+                                break
+                        try:
+                            explanation = (await card.locator(".feedback").inner_text(timeout=1000)).strip()
+                            explanation = re.sub(r"^(✨ ¡Correcto! \+10 puntos\. |💡 Sigue aprendiendo\. |¡Reto superado! |Respuesta guardada\. )", "", explanation)
+                        except Exception:
+                            explanation = ""
+                    # The screenshot and answer feedback come from the live published game.
                     items.append({"question": question, "options": opts[:4], "background": str(bg),
-                                  "category": "Reto educativo", "correct": None, "explanation": ""})
+                                  "category": "Reto educativo", "correct": correct, "explanation": explanation})
             except Exception:
                 continue
         # If a page version exposes a global data bank, read it only when DOM cards are unavailable.
