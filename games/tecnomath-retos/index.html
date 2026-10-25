@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10152f">
+<meta name="description" content="TecnoMath Retos: minijuego educativo para practicar con preguntas rápidas y videos de retos.">
+<title>🎯 TecnoMath Retos</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<style>
+:root{color-scheme:dark;--bg:#0b1024;--panel:#151d3b;--panel2:#1d2850;--ink:#f6f7ff;--muted:#b6c0e7;--accent:#8b7cff;--cyan:#52e5d2;--gold:#ffd76a;--bad:#ff8297}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#20265a 0,#0b1024 58%);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+a{color:var(--cyan)}button,input{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:.8rem 1rem;font-weight:800;color:#10152f;background:var(--cyan)}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{width:min(1050px,100% - 28px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 0}.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.2rem}.brand img{width:48px;height:48px}.pill{background:#ffffff14;border:1px solid #ffffff20;border-radius:999px;padding:.45rem .75rem;color:var(--muted);white-space:nowrap}
+.hero{padding:24px 0 18px}.eyebrow{color:var(--cyan);font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}.hero h1{font-size:clamp(2rem,6vw,3.8rem);line-height:1.04;margin:.35rem 0 1rem}.hero p{color:var(--muted);max-width:680px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.stat,.card{background:linear-gradient(145deg,#1b2449,#111831);border:1px solid #ffffff18;border-radius:18px;padding:16px;box-shadow:0 12px 30px #0002}.stat strong{display:block;font-size:1.45rem}.stat span{font-size:.85rem;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0}.toolbar button.secondary,.secondary{background:#ffffff12;color:var(--ink);border:1px solid #ffffff24}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding-bottom:40px}.card h2{margin:.2rem 0 .5rem;font-size:1.2rem}.meta{color:var(--muted);font-size:.85rem}.question{font-size:1.05rem;font-weight:750;margin:14px 0}.answers{display:grid;gap:8px}.answer{background:#ffffff0c;color:var(--ink);border:1px solid #ffffff20;text-align:left;font-weight:650}.answer:hover{background:#ffffff18}.answer.correct{background:#164d4a;border-color:var(--cyan)}.answer.wrong{background:#51283c;border-color:var(--bad)}.feedback{min-height:28px;margin:8px 0;color:var(--gold);font-weight:700}.video{margin:12px 0;border-radius:12px;overflow:hidden;background:#080c1a;aspect-ratio:16/9;display:grid;place-items:center;border:1px solid #ffffff18}.video iframe{width:100%;height:100%;border:0}.video.empty{padding:12px;color:var(--muted);text-align:center}.video-tools{display:flex;gap:8px;margin-top:8px}.video-tools input{min-width:0;flex:1;background:#080d20;color:var(--ink);border:1px solid #ffffff24;border-radius:10px;padding:.7rem}.video-tools button{padding:.7rem}.foot{color:var(--muted);font-size:.85rem;padding:0 0 30px}.hidden{display:none!important}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.stats{gap:7px}.stat{padding:12px}.stat strong{font-size:1.2rem}.video-tools{flex-direction:column}.video-tools button{width:100%}}
+</style>
+</head>
+<body>
+<header class="wrap top">
+<a class="brand" href="../../index.html" style="text-decoration:none;color:inherit"><img src="icon.svg" alt=""><span>TecnoMath<br><small style="color:var(--muted);font-size:.78rem">RETOS EN VIDEO</small></span></a>
+<div class="pill">🎯 Reta tu mente</div>
+</header>
+<main class="wrap">
+<section class="hero">
+<div class="eyebrow">Aprende · juega · comparte</div>
+<h1>¡Acepta el reto!</h1>
+<p>Responde preguntas rápidas, suma puntos y agrega videos de YouTube o Shorts a cada desafío. Los videos y tu progreso se guardan en este dispositivo.</p>
+<div class="stats" aria-live="polite">
+<div class="stat"><strong id="score">0</strong><span>⭐ Puntos</span></div>
+<div class="stat"><strong id="done">0/6</strong><span>✅ Retos completados</span></div>
+<div class="stat"><strong id="accuracy">—</strong><span>🎯 Aciertos</span></div>
+</div>
+<div class="toolbar"><button id="shuffle">🔀 Otro orden</button><button id="reset" class="secondary">↻ Reiniciar progreso</button></div>
+</section>
+<section id="challenges" class="grid" aria-label="Lista de retos"></section>
+<p class="foot">TecnoMath Retos · Actividad educativa. Para compartir un reto, copia el enlace de esta página. Los videos se cargan desde YouTube cuando agregas una URL válida.</p>
+</main>
+<script>
+(function(){
+'use strict';
+const questions=[
+{id:'math',category:'Matemáticas',emoji:'🧮',question:'¿Cuánto es 8 × 7?',answers:['54','56','64','48'],correct:1,explain:'8 × 7 = 56.'},
+{id:'logic',category:'Lógica',emoji:'🧩',question:'¿Qué número sigue? 2, 4, 8, 16, …',answers:['18','24','32','30'],correct:2,explain:'Cada número se multiplica por 2: sigue 32.'},
+{id:'science',category:'Ciencias',emoji:'🔬',question:'¿Qué órgano bombea la sangre?',answers:['Pulmón','Cerebro','Corazón','Estómago'],correct:2,explain:'El corazón impulsa la sangre por el cuerpo.'},
+{id:'spanish',category:'Español',emoji:'📚',question:'¿Cuál palabra es un sustantivo?',answers:['Correr','Hermoso','Mesa','Rápidamente'],correct:2,explain:'Mesa nombra un objeto; por eso es sustantivo.'},
+{id:'english',category:'Inglés',emoji:'🌎',question:'What is the meaning of “book”?',answers:['Libro','Ventana','Lápiz','Escuela'],correct:0,explain:'“Book” significa “libro”.'},
+{id:'social',category:'Sociales',emoji:'🌍',question:'¿Cuál es la capital de Colombia?',answers:['Medellín','Cali','Bogotá','Barranquilla'],correct:2,explain:'La capital de Colombia es Bogotá.'}
+];
+const KEY='tecnomath-retos-v1';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){saved={}}
+if(!saved.answers)saved.answers={};if(!saved.videos)saved.videos={};
+let order=questions.map(q=>q.id);
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(_){}renderStats()}
+function youtubeId(url){try{const u=new URL(url);if(u.hostname==='youtu.be')return u.pathname.split('/').filter(Boolean)[0]||'';if(u.hostname.endsWith('youtube.com'))return u.searchParams.get('v')||u.pathname.match(/\/(?:shorts|embed|live)\/([^/?]+)/)?.[1]||''}catch(_){}return ''}
+function safeVideo(url){const id=youtubeId(url||'');return /^[a-zA-Z0-9_-]{6,20}$/.test(id)?id:''}
+function renderStats(){const results=Object.values(saved.answers);$('score').textContent=results.reduce((sum,a)=>sum+(a.correct?10:0),0);$('done').textContent=results.length+'/'+questions.length;$('accuracy').textContent=results.length?Math.round(results.filter(a=>a.correct).length/results.length*100)+'%':'—'}
+function render(){
+const host=$('challenges');host.innerHTML='';
+order.forEach((id,index)=>{const q=questions.find(x=>x.id===id),previous=saved.answers[q.id],video=saved.videos[q.id]||'',vid=safeVideo(video);
+const card=document.createElement('article');card.className='card';
+card.innerHTML='<div class="meta">'+q.emoji+' RETO '+(index+1)+' · '+q.category+'</div><h2>'+q.category+'</h2><div class="question"></div><div class="answers"></div><div class="feedback" aria-live="polite"></div><div class="video '+(vid?'':'empty')+'">'+(vid?'<iframe loading="lazy" title="Video del reto '+q.category+'" src="https://www.youtube-nocookie.com/embed/'+vid+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>':'📹 Agrega un video de YouTube o un Short para acompañar este reto.')+'</div><label class="meta" for="video-'+q.id+'">Enlace del video (opcional)</label><div class="video-tools"><input id="video-'+q.id+'" type="url" placeholder="https://youtu.be/..." aria-label="Enlace de video para '+q.category+'"><button type="button" class="save-video">Guardar video</button></div>';
+card.querySelector('.question').textContent=q.question;
+const answers=card.querySelector('.answers');
+q.answers.forEach((answer,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='answer';btn.textContent=String.fromCharCode(65+i)+'. '+answer;btn.disabled=!!previous;if(previous&&i===q.correct)btn.classList.add('correct');if(previous&&i===previous.choice&& !previous.correct)btn.classList.add('wrong');btn.addEventListener('click',()=>{if(saved.answers[q.id])return;const correct=i===q.correct;saved.answers[q.id]={choice:i,correct:correct};save();btn.classList.add(correct?'correct':'wrong');answers.querySelectorAll('button').forEach(b=>b.disabled=true);if(correct)answers.children[q.correct].classList.add('correct');card.querySelector('.feedback').textContent=(correct?'¡Correcto! +10 puntos. ':'No esta vez. ')+q.explain;renderStats()});answers.appendChild(btn)});
+card.querySelector('.feedback').textContent=previous?((previous.correct?'¡Reto superado! ':'Respuesta guardada. ')+q.explain):'Elige una respuesta para ganar 10 puntos.';
+const input=card.querySelector('input');input.value=video;
+card.querySelector('.save-video').addEventListener('click',()=>{const raw=input.value.trim();if(raw&&!safeVideo(raw)){card.querySelector('.feedback').textContent='Pega un enlace válido de YouTube, youtu.be o Shorts.';return}if(raw)saved.videos[q.id]=raw;else delete saved.videos[q.id];save();render()});
+host.appendChild(card)
+});renderStats()
+}
+$('shuffle').addEventListener('click',()=>{for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}render()});
+$('reset').addEventListener('click',()=>{if(!confirm('¿Reiniciar los puntos y las respuestas? Los videos guardados se conservarán.'))return;saved.answers={};save();render()});
+render();
+})();
+</script>
+</body>
+</html>
