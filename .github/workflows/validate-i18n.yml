@@ -1,0 +1,26 @@
+name: Validate TecnoMath i18n
+
+on:
+  pull_request:
+    paths:
+      - 'locales/**'
+      - 'js/i18n.js'
+      - 'scripts/validate-i18n.mjs'
+      - '.github/workflows/validate-i18n.yml'
+  push:
+    branches: [feat/global-i18n-final]
+    paths:
+      - 'locales/**'
+      - 'js/i18n.js'
+      - 'scripts/validate-i18n.mjs'
+      - '.github/workflows/validate-i18n.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/validate-i18n.mjs
