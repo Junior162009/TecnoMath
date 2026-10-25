@@ -2,7 +2,7 @@ name: Inject TecnoMath global i18n
 
 on:
   push:
-    branches: [feat/global-i18n]
+    branches: [feat/global-i18n-clean]
     paths:
       - '**/*.html'
       - '.github/workflows/inject-global-i18n.yml'
@@ -16,26 +16,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inject i18n runtime into HTML documents
+      - name: Inject i18n runtime into HTML documents without changing line endings
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
 
-          marker = '<script src="/js/i18n.js" defer></script>'
+          marker = b'<script src="/js/i18n.js" defer></script>'
           changed = []
           for path in Path('.').rglob('*.html'):
               if any(part in {'.git', 'node_modules'} for part in path.parts):
                   continue
-              text = path.read_text(encoding='utf-8')
-              if '/js/i18n.js' in text:
+              raw = path.read_bytes()
+              if b'/js/i18n.js' in raw:
                   continue
-              if re.search(r'</head>', text, flags=re.I):
-                  text = re.sub(r'</head>', f'    {marker}\n</head>', text, count=1, flags=re.I)
+              newline = b'\r\n' if b'\r\n' in raw else b'\n'
+              if re.search(br'</head>', raw, flags=re.I):
+                  replacement = b'    ' + marker + newline + b'</head>'
+                  raw = re.sub(br'</head>', replacement, raw, count=1, flags=re.I)
               else:
-                  text = marker + '\n' + text
-              path.write_text(text, encoding='utf-8')
+                  raw = marker + newline + raw
+              path.write_bytes(raw)
               changed.append(str(path))
           print(f'Injected i18n into {len(changed)} HTML files')
           for item in changed:
@@ -45,7 +47,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add '*.html' '**/*.html' || true
+          git add -- '*.html'
           if git diff --cached --quiet; then
             echo 'No HTML files required migration.'
             exit 0
