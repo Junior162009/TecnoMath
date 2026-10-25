@@ -593,6 +593,29 @@
         }
     </style>
     <script src="js/games-loader.js?v=1" defer></script>
+    <!-- Metricool: seguimiento de visitas aislado para no crear funciones globales. -->
+    <script>
+    (function () {
+        var metricoolHash = "c37d10c2085ac034746ee5598e5c84d7";
+        var metricoolScript = document.createElement("script");
+        metricoolScript.type = "text/javascript";
+        metricoolScript.src = "https://tracker.metricool.com/resources/be.js";
+        metricoolScript.async = true;
+        metricoolScript.onload = function () {
+            try {
+                if (window.beTracker && typeof window.beTracker.t === "function") {
+                    window.beTracker.t({ hash: metricoolHash });
+                }
+            } catch (error) {
+                console.warn("Metricool no pudo registrar la visita.", error);
+            }
+        };
+        metricoolScript.onerror = function () {
+            console.warn("Metricool no está disponible; TecnoMath seguirá funcionando.");
+        };
+        (document.head || document.getElementsByTagName("head")[0]).appendChild(metricoolScript);
+    })();
+    </script>
 </head>
 <body>
     <header>
