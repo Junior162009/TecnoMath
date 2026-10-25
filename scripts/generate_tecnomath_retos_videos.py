@@ -129,7 +129,7 @@ async def scrape_live():
               const match = source.match(/const\\s+questions\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*;/);
               if (!match) return [];
               const literal = match[1];
-              if (!/^[\\s\\[\\]{}:,.'\"\\w\\-×¿?¡!…·⭐🧮🧩🔬📚🌎🌍]+$/.test(literal)) return [];
+              if (literal.includes('=>') || /\\bfunction\\b|\\bimport\\b|\\beval\\b/.test(literal)) return [];
               try {
                 const parsed = Function('"use strict"; return (' + literal + ')')();
                 return Array.isArray(parsed) ? parsed.map(q => ({
