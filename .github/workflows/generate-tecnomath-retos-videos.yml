@@ -40,7 +40,7 @@ jobs:
           TTS_VOICE: es-CO-SalomeNeural
           VIDEO_OUTPUT_DIR: output/tecnomath-retos
           TECNOMATH_VIDEO_COUNT: "5"
-          GAMEPLAY_CAPTURE_SECONDS: "9"
+          GAMEPLAY_CAPTURE_SECONDS: "30"
         run: python scripts/generate_tecnomath_retos_videos.py
       - name: Validar manifiesto y cinco videos antes de publicar el artefacto
         shell: bash
