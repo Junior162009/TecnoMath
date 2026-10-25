@@ -11,8 +11,9 @@ Al terminar una ejecución, abre su resumen en GitHub Actions y descarga el arte
 ## Requisitos y límites
 - No requiere claves API propias ni cambia Supabase.
 - La voz usa el servicio de Edge TTS; necesita conexión a Internet y su disponibilidad depende del servicio externo. No se garantiza SLA.
-- La página pública debe estar disponible y exponer al menos cinco tarjetas con preguntas y opciones reconocibles.
-- Solo anuncia la respuesta como correcta si el banco de preguntas expone un índice correcto válido. Si la página no lo expone, el cierre invita a comprobar la respuesta en la página y no inventa la solución.
+- La página pública debe estar disponible y exponer su banco de preguntas con al menos cinco preguntas válidas. El generador inspecciona el DOM real (tarjetas `.card`, preguntas `.question`, opciones `.answer`) y, si las respuestas correctas no están reflejadas en el estado visual, lee el banco literal de preguntas del script publicado. No pulsa opciones ni modifica el progreso del juego.
+- Cada pregunta debe tener entre 2 y 4 opciones de texto y un índice correcto entero válido. Las preguntas sin respuesta verificable se descartan; si quedan menos de cinco, la ejecución falla y no publica el artefacto.
+- Cada MP4 se inspecciona con `ffprobe`: H.264, 1080×1920, pista AAC y duración válida. El manifiesto debe listar exactamente cinco videos existentes; el workflow repite la validación antes de subir el artefacto.
 - Las tarjetas se derivan de preguntas leídas en el sitio público y las capturas reales de las tarjetas se usan como fondo visual. El MP4 final es una composición vertical, no una grabación continua de la interacción del navegador.
 - La programación de GitHub Actions puede retrasarse y depende de límites de uso/retención de GitHub. Las ejecuciones programadas se ejecutan en la rama predeterminada; después de revisar este PR y fusionarlo, el workflow quedará activo.
 - La generación no equivale a publicación automática en TikTok, Reels, Shorts ni Facebook.
