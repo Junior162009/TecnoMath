@@ -18,7 +18,13 @@ FPS = 30
 ROOT.mkdir(parents=True, exist_ok=True)
 
 def run(args):
-    subprocess.run(args, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if result.returncode:
+        detail = (result.stderr or result.stdout or "").strip()
+        print(f"COMMAND FAILED (exit {result.returncode}): {' '.join(map(str, args))}", file=sys.stderr)
+        if detail:
+            print(detail[-12000:], file=sys.stderr)
+        raise subprocess.CalledProcessError(result.returncode, args, output=result.stdout, stderr=result.stderr)
 
 def font(size, bold=False):
     choices = (["/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"] if bold else
@@ -211,8 +217,12 @@ async def main():
         run(["ffmpeg","-y","-loop","1","-i",str(rimg),"-t",str(second_duration),"-r",str(FPS),"-vf","scale=1080:1920,format=yuv420p","-an","-c:v","libx264","-preset","ultrafast","-pix_fmt","yuv420p",str(clip2)])
         joined = work/"joined.mp4"
         listing = work/"clips.txt"
-        listing.write_text(f"file '{clip1.as_posix()}'\nfile '{clip2.as_posix()}'\n",encoding="utf-8")
-        run(["ffmpeg","-y","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(joined)])
+        # Re-encode the two visual segments through the concat filter. Stream-copy
+        # concat can fail when MP4 time bases or frame timestamps differ slightly.
+        run(["ffmpeg","-y","-i",str(clip1),"-i",str(clip2),
+             "-filter_complex","[0:v:0][1:v:0]concat=n=2:v=1:a=0[outv]",
+             "-map","[outv]","-r",str(FPS),"-an","-c:v","libx264",
+             "-preset","ultrafast","-pix_fmt","yuv420p",str(joined)])
         slug = re.sub(r"[^a-z0-9]+","-",question.lower()).strip("-")[:48] or f"reto-{number}"
         out = ROOT/f"{day}-tecnomath-reto-{number}-{slug}.mp4"
         run(["ffmpeg","-y","-i",str(joined),"-i",str(voice),"-map","0:v:0","-map","1:a:0","-c:v","libx264","-preset","veryfast","-crf","24","-c:a","aac","-b:a","128k","-shortest","-movflags","+faststart","-pix_fmt","yuv420p",str(out)])
