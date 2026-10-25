@@ -15,17 +15,17 @@ GAME_ROOT = Path(os.environ.get("TECNOMATH_GAME_ROOT", "games"))
 VOICE = os.environ.get("TTS_VOICE", "es-CO-SalomeNeural")
 COUNT = int(os.environ.get("TECNOMATH_VIDEO_COUNT", "5"))
 WIDTH, HEIGHT, FPS = 1080, 1920, 30
-CAPTURE_SECONDS = float(os.environ.get("GAMEPLAY_CAPTURE_SECONDS", "9"))
+CAPTURE_SECONDS = float(os.environ.get("GAMEPLAY_CAPTURE_SECONDS", "30"))
 SEED = os.environ.get("VIDEO_ROTATION_SEED", datetime.now(timezone.utc).strftime("%Y-%m-%d"))
 SKIP_DIRS = {"IA", "downloader"}
 ROOT.mkdir(parents=True, exist_ok=True)
 
 FORMATS = [
-    ("¿PUEDES SUPERARLO?", "A ver si puedes superar este reto de TecnoMath.", "🔥 ¿Cuánto sacarías tú?"),
-    ("5 SEGUNDOS", "Tienes cinco segundos. ¡Vamos!", "⏱️ ¿Lo conseguiste?"),
-    ("NIVEL DIFÍCIL", "Este nivel no es para todos.", "🧠 ¿Lo puedes superar?"),
-    ("¿QUÉ HARÍAS?", "Mira bien. ¿Qué harías tú?", "🤔 ¿Habrías elegido lo mismo?"),
-    ("RÉCORD", "¿Puedes superar esta puntuación?", "🚀 Inténtalo en TecnoMath."),
+    ("¿PUEDES SUPERARLO?", "¡Llegó el reto de TecnoMath! Observa la partida, piensa rápido y decide tu respuesta antes de que avance el juego. No te quedes mirando: intenta resolverlo tú también. ¿Podrás superar este nivel? Quédate hasta el final y comprueba cómo termina la partida.", "🔥 ¿Cuánto sacarías tú?"),
+    ("RETO CONTRARRELOJ", "Atención, empieza el desafío. Mira lo que sucede durante la partida y trata de encontrar la solución antes que el jugador. Cada movimiento puede cambiar el resultado. Piensa rápido, sigue jugando desde el primer segundo y cuéntanos si lograste resolverlo a tiempo.", "⏱️ ¿Lo conseguiste?"),
+    ("NIVEL DIFÍCIL", "Este reto parece sencillo, pero no te confíes. Observa el gameplay real, analiza cada movimiento y busca la mejor respuesta. Intenta resolverlo mentalmente mientras continúa la partida. ¿Tienes la concentración necesaria para superar este nivel? Vamos a descubrirlo.", "🧠 ¿Lo puedes superar?"),
+    ("¿QUÉ HARÍAS TÚ?", "Mira atentamente la partida y ponte en el lugar del jugador. ¿Qué decisión tomarías tú? Sigue el reto, piensa tu respuesta y compárala con lo que ocurre en pantalla. No vale responder después de ver el resultado: ¡inténtalo antes!", "🤔 ¿Habrías elegido lo mismo?"),
+    ("RETO TECNOMATH", "Bienvenido a un nuevo desafío de TecnoMath. La partida está en marcha, así que presta atención a los detalles y trata de anticipar el siguiente movimiento. Resuelve el reto mientras ves cómo evoluciona el juego y comparte tu resultado con tus amigos.", "🚀 Juega más retos en TecnoMath."),
 ]
 
 
@@ -230,9 +230,9 @@ def render_vertical(game_video, voice_file, out, fmt):
         cmd += ["-map", "0:v:0"]
     cmd += ["-vf", vf, "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-pix_fmt", "yuv420p"]
     if voice_file:
-        cmd += ["-c:a", "aac", "-b:a", "128k", "-shortest"]
+        cmd += ["-af", "apad", "-t", str(CAPTURE_SECONDS), "-c:a", "aac", "-b:a", "128k"]
     else:
-        cmd += ["-an"]
+        cmd += ["-t", str(CAPTURE_SECONDS), "-an"]
     cmd += ["-movflags", "+faststart", str(out)]
     run(cmd)
 
@@ -303,7 +303,7 @@ async def main():
     if len(manifest) != COUNT:
         raise RuntimeError(f"Solo se validaron {len(manifest)} de {COUNT} videos; no se publicará una tanda incompleta")
     date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    payload = {"date_utc": date, "count": len(manifest), "mode": "real-minigames", "games_discovered": len(games), "validation_status": "passed", "videos": manifest}
+    payload = {"date_utc": date, "count": len(manifest), "mode": "real-minigames", "target_duration_seconds": CAPTURE_SECONDS, "games_discovered": len(games), "validation_status": "passed", "videos": manifest}
     (ROOT / "manifest.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     for p in ROOT.glob(".work-*"):
         shutil.rmtree(p, ignore_errors=True)
