@@ -40,6 +40,44 @@ jobs:
           TTS_VOICE: es-CO-SalomeNeural
           VIDEO_OUTPUT_DIR: output/tecnomath-retos
         run: python scripts/generate_tecnomath_retos_videos.py
+      - name: Validar manifiesto y cinco videos antes de publicar el artefacto
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, subprocess
+          root = pathlib.Path("output/tecnomath-retos")
+          manifest_path = root / "manifest.json"
+          if not manifest_path.is_file():
+              raise SystemExit("ERROR: falta manifest.json")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          videos = manifest.get("videos", [])
+          if manifest.get("count") != 5 or len(videos) != 5:
+              raise SystemExit(f"ERROR: se esperaban cinco videos en manifest.json; hay {len(videos)}")
+          for item in videos:
+              path = root / item["file"]
+              if not path.is_file() or path.stat().st_size < 1024:
+                  raise SystemExit(f"ERROR: MP4 ausente/vacío: {path}")
+              data = json.loads(subprocess.check_output([
+                  "ffprobe", "-v", "error", "-show_entries",
+                  "stream=codec_name,codec_type,width,height", "-show_entries",
+                  "format=duration", "-of", "json", str(path)], text=True))
+              streams = data.get("streams", [])
+              video = next((s for s in streams if s.get("codec_type") == "video"), None)
+              audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+              duration = float(data.get("format", {}).get("duration", 0))
+              if not video or (video.get("codec_name"), video.get("width"), video.get("height")) != ("h264", 1080, 1920):
+                  raise SystemExit(f"ERROR: video H.264/1080x1920 inválido: {path}")
+              if not audio or audio.get("codec_name") != "aac" or duration <= 0:
+                  raise SystemExit(f"ERROR: falta audio AAC o duración válida: {path}")
+              if item.get("has_verified_answer") is not True:
+                  raise SystemExit(f"ERROR: respuesta no verificada: {path}")
+              print(f"VALID {path.name}: {duration:.2f}s H.264 1080x1920 + AAC")
+          mp4s = list(root.glob("*.mp4"))
+          if len(mp4s) != 5:
+              raise SystemExit(f"ERROR: se esperaban exactamente cinco MP4; hay {len(mp4s)}")
+          print("VALIDATION OK: five MP4 and manifest")
+          PY
       - name: Guardar MP4 y manifiesto como artefacto descargable
         uses: actions/upload-artifact@v4
         with:
@@ -47,3 +85,12 @@ jobs:
           path: output/tecnomath-retos/
           if-no-files-found: error
           retention-days: 30
+      - name: Conservar logs de diagnóstico si falla la generación
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tecnomath-retos-diagnostics-${{ github.run_id }}
+          path: |
+            output/tecnomath-retos/
+          if-no-files-found: warn
+          retention-days: 7
