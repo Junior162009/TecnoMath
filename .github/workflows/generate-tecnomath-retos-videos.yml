@@ -1,0 +1,49 @@
+name: Generar 5 videos diarios de TecnoMath Retos
+
+on:
+  schedule:
+    # 12:00 UTC = 07:00 en Colombia
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tecnomath-retos-video-generation
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Obtener el repositorio
+        uses: actions/checkout@v4
+      - name: Instalar Python y FFmpeg
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Instalar FFmpeg y Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Instalar dependencias de generación
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright pillow edge-tts
+          python -m playwright install --with-deps chromium
+      - name: Generar cinco MP4 desde TecnoMath Retos publicado
+        env:
+          TECNOMATH_RETOS_URL: https://tecnomath.online/games/tecnomath-retos/
+          TTS_VOICE: es-CO-SalomeNeural
+          VIDEO_OUTPUT_DIR: output/tecnomath-retos
+        run: python scripts/generate_tecnomath_retos_videos.py
+      - name: Guardar MP4 y manifiesto como artefacto descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: tecnomath-retos-videos-${{ github.run_id }}
+          path: output/tecnomath-retos/
+          if-no-files-found: error
+          retention-days: 30
