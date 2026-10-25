@@ -14,3 +14,4 @@ window.TECNOMATH_ADS = Object.freeze({
   contextualOnly: true,
   requireConsentForPersonalizedAds: true
 });
+(function(){if(document.querySelector('script[data-tecnomath-i18n]'))return;const s=document.createElement('script');s.src='/js/i18n.js';s.defer=true;s.dataset.tecnomathI18n='true';document.head.appendChild(s)})();
