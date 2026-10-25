@@ -195,8 +195,11 @@ async def main():
         run(["ffmpeg","-y","-f","lavfi","-i","anullsrc=r=24000:cl=mono","-t","1.2","-q:a","9",str(silence)])
         voice = work/"voz.mp3"
         concat = work/"audio.txt"
-        concat.write_text(f"file '{a.as_posix()}'\nfile '{silence.as_posix()}'\nfile '{b.as_posix()}'\n",encoding="utf-8")
-        run(["ffmpeg","-y","-f","concat","-safe","0","-i",str(concat),"-c:a","libmp3lame","-q:a","3",str(voice)])
+        # Decode each source and concatenate audio streams explicitly. The concat
+        # demuxer can fail on edge-tts MP3s with differing headers/timestamps.
+        run(["ffmpeg","-y","-i",str(a),"-i",str(silence),"-i",str(b),
+             "-filter_complex","[0:a][1:a][2:a]concat=n=3:v=0:a=1[out]",
+             "-map","[out]","-c:a","libmp3lame","-q:a","3",str(voice)])
         qimg, rimg = work/"pregunta.png", work/"respuesta.png"
         make_slide(q["background"],question,options).save(qimg)
         make_slide(q["background"],question,options,correct,explanation,True).save(rimg)
@@ -242,7 +245,15 @@ async def main():
     print(f"SUCCESS: {len(manifest)} MP4 creados en {ROOT}")
 
 if __name__ == "__main__":
-    try: asyncio.run(main())
+    try:
+        asyncio.run(main())
     except Exception as exc:
-        print(f"ERROR: {exc}",file=sys.stderr)
+        import traceback
+        error_text = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        try:
+            ROOT.mkdir(parents=True, exist_ok=True)
+            (ROOT / "generation-error.log").write_text(error_text, encoding="utf-8")
+        except Exception:
+            pass
+        print(f"ERROR: {exc}", file=sys.stderr)
         raise
