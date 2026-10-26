@@ -7,15 +7,13 @@ from pathlib import Path
 from urllib.parse import urljoin
 
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
-import edge_tts
 
 ROOT = Path(os.environ.get("VIDEO_OUTPUT_DIR", "output/tecnomath-retos"))
 SITE_BASE = os.environ.get("TECNOMATH_SITE_BASE", "https://tecnomath.online/")
 GAME_ROOT = Path(os.environ.get("TECNOMATH_GAME_ROOT", "games"))
-VOICE = os.environ.get("TTS_VOICE", "es-CO-SalomeNeural")
 COUNT = int(os.environ.get("TECNOMATH_VIDEO_COUNT", "5"))
 WIDTH, HEIGHT, FPS = 1080, 1920, 30
-CAPTURE_SECONDS = float(os.environ.get("GAMEPLAY_CAPTURE_SECONDS", "9"))
+CAPTURE_SECONDS = max(60.0, float(os.environ.get("GAMEPLAY_CAPTURE_SECONDS", "75")))
 SEED = os.environ.get("VIDEO_ROTATION_SEED", datetime.now(timezone.utc).strftime("%Y-%m-%d"))
 SKIP_DIRS = {"IA", "downloader"}
 ROOT.mkdir(parents=True, exist_ok=True)
@@ -102,15 +100,6 @@ def discover_games():
         })
         log("GAME_DISCOVERED", name=folder, entry=str(index))
     return games
-
-
-async def synthesize(text, out):
-    try:
-        await edge_tts.Communicate(text, VOICE, rate="+5%", volume="+0%").save(str(out))
-        return True
-    except Exception as exc:
-        log("GAME_ERROR", stage="tts", error=str(exc))
-        return False
 
 
 async def capture_game(game, work):
@@ -251,23 +240,19 @@ async def render_one(game, number):
         log("GAME_ERROR", stage="gameplay_validation", name=game["name"], error=str(exc))
         return None
     fmt = FORMATS[(number - 1) % len(FORMATS)]
-    voice = work / "voice.mp3"
-    voice_ok = await synthesize(fmt[1], voice)
-    voice_path = voice if voice_ok and voice.exists() and voice.stat().st_size > 1024 else None
+    # Keep the source audio-free so the creator can add their own voice, music and effects.
     out = ROOT / f"video-{number:02d}.mp4"
     try:
-        render_vertical(capture, voice_path, out, fmt)
+        render_vertical(capture, None, out, fmt)
         data, video, audio = ffprobe(out)
         duration = float(data.get("format", {}).get("duration", 0))
         size = int(data.get("format", {}).get("size", 0))
-        valid = bool(video and video.get("codec_name") == "h264" and video.get("width") == WIDTH and video.get("height") == HEIGHT and duration > 0 and size > 1024)
-        if voice_path:
-            valid = valid and bool(audio and audio.get("codec_name") == "aac")
+        valid = bool(video and video.get("codec_name") == "h264" and video.get("width") == WIDTH and video.get("height") == HEIGHT and duration >= 60 and size > 1024 and audio is None)
         if not valid:
             raise RuntimeError(f"video_validation_failed: {data}")
         log("VIDEO_RENDERED", file=out.name, game=game["name"], format=fmt[0])
-        log("VIDEO_VALIDATED", file=out.name, duration=round(duration, 2), bytes=size, audio=bool(audio))
-        return {"file": out.name, "minigame": game["name"], "game": game["name"], "source": game["url"], "entry": game["entry"], "format": fmt[0], "duration_seconds": round(duration, 2), "width": WIDTH, "height": HEIGHT, "resolution": f"{WIDTH}x{HEIGHT}", "video_codec": "h264", "audio_codec": "aac" if voice_path else None, "voice": VOICE if voice_path else None, "gameplay_captured": True, "gameplay_motion_validated": True, "validated": True, "validation_status": "passed"}
+        log("VIDEO_VALIDATED", file=out.name, duration=round(duration, 2), bytes=size, audio=bool(audio), creator_voiceover_ready=True)
+        return {"file": out.name, "minigame": game["name"], "game": game["name"], "source": game["url"], "entry": game["entry"], "format": fmt[0], "duration_seconds": round(duration, 2), "width": WIDTH, "height": HEIGHT, "resolution": f"{WIDTH}x{HEIGHT}", "video_codec": "h264", "audio_codec": None, "voice": None, "creator_voiceover_ready": True, "gameplay_captured": True, "gameplay_motion_validated": True, "validated": True, "validation_status": "passed"}
     except Exception as exc:
         log("GAME_ERROR", stage="render_or_validate", name=game["name"], error=str(exc))
         out.unlink(missing_ok=True)
