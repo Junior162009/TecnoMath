@@ -512,5 +512,31 @@
     "logoStoragePath": "",
     "packageStoragePath": "",
     "packageFileName": ""
+  },
+  {
+    "id": "graffiti-hunt",
+    "name": "🎨 GRAFITI HUNT 100",
+    "desc": "Explora la ciudad y encuentra 100 grafitis.",
+    "description": "Minijuego de exploración urbana con mapa interactivo, colección de 100 grafitis, filtros, progreso visual y guardado automático.",
+    "url": "games/graffiti-hunt/index.html",
+    "imageUrl": "",
+    "icon": "🎨",
+    "category": "otros",
+    "deviceCompatibility": "both",
+    "evento": null,
+    "sourceType": "internal",
+    "status": "published",
+    "allowVoting": true,
+    "featured": false,
+    "order": 21,
+    "urlType": "internal",
+    "publishDate": "2026-10-27T00:31:43.038Z",
+    "authorName": "TecnoMath",
+    "grade": "Todos",
+    "folder": "games/graffiti-hunt",
+    "folderPath": "games/graffiti-hunt",
+    "entryFile": "index.html",
+    "logoStoragePath": "",
+    "packageStoragePath": ""
   }
 ]
