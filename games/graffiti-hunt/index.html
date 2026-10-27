@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10131a">
+<meta name="description" content="Explora la ciudad, encuentra 100 grafitis y guarda tu progreso.">
+<title>Grafiti Hunt 100 · TecnoMath</title>
+<style>
+:root{color-scheme:dark;--bg:#10131a;--panel:#191e28;--line:#2b3443;--muted:#9aa7b8;--text:#f4f7fb;--red:#ff4655;--green:#24d17e;--cyan:#4edcf4}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#263449 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.shell{max-width:1440px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#ff4655,#ff8b46);font-size:25px;box-shadow:0 8px 28px #ff465533}.eyebrow{color:var(--cyan);font-weight:800;text-transform:uppercase;letter-spacing:.14em;font-size:11px}.brand h1{font-size:clamp(21px,4vw,32px);margin:2px 0 0;letter-spacing:-.04em}.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#202735;color:var(--text);border-radius:11px;padding:10px 14px;font-weight:750}.btn:hover{filter:brightness(1.15)}.btn.primary{background:var(--cyan);color:#081319;border-color:transparent}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:14px}.stat .label{font-size:12px;color:var(--muted);font-weight:700}.stat .num{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.04em;margin-top:4px}.green{color:var(--green)}.red{color:var(--red)}.progress-wrap{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:16px}.progress-head{display:flex;justify-content:space-between;gap:10px;font-weight:800;font-size:13px;margin-bottom:9px}.track{height:10px;background:#303846;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#20bb72,#60f0a8);border-radius:99px;transition:width .25s}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:14px;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;overflow:hidden}.panel-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.panel-head h2{font-size:16px;margin:0}.panel-head p{color:var(--muted);font-size:12px;margin:3px 0 0}.map-wrap{padding:12px}.map{position:relative;aspect-ratio:1.08/1;min-height:340px;overflow:hidden;border-radius:13px;background:#202b35;border:1px solid #3c4a55;isolation:isolate}
+.map:before{content:"";position:absolute;inset:0;background:linear-gradient(28deg,transparent 47%,#3a4b53 48%,#3a4b53 51%,transparent 52%),linear-gradient(115deg,transparent 44%,#3a4b53 45%,#3a4b53 48%,transparent 49%),linear-gradient(0deg,transparent 48%,#34454d 49%,#34454d 51%,transparent 52%);background-size:155px 130px,180px 150px,100% 94px;opacity:.9}
+.blocks{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 9%,#18242c 9% 11%,transparent 11% 19%),repeating-linear-gradient(0deg,transparent 0 11%,#18242c 11% 13%,transparent 13% 24%);opacity:.75;pointer-events:none}
+.park{position:absolute;background:#315b4b;border:2px solid #4a8065;border-radius:15px;opacity:.9}.park.one{left:5%;top:8%;width:22%;height:19%}.park.two{right:7%;bottom:9%;width:24%;height:22%}.water{position:absolute;right:4%;top:3%;height:40%;width:9%;background:#28637b;border-radius:45%;transform:rotate(12deg);opacity:.8}
+.map-label{position:absolute;color:#d3e0e6;font-size:10px;letter-spacing:.08em;font-weight:900;text-shadow:0 2px 3px #10131a;pointer-events:none}.pins{position:absolute;inset:0}.pin{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:9px 9px 9px 2px;transform-origin:center;rotate:-45deg;border:2px solid #fff;color:#fff;background:var(--red);box-shadow:0 2px 7px #0008;display:grid;place-items:center;padding:0;font-size:10px;font-weight:900;z-index:1}.pin span{rotate:45deg}.pin.found{background:var(--green);color:#052214;border-color:#d8ffea}.pin.selected{z-index:3;outline:3px solid var(--cyan);outline-offset:2px;scale:1.2}.map-legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 3px 0;color:var(--muted);font-size:12px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dot.red{background:var(--red)}.dot.green{background:var(--green)}
+.list-area{padding:12px}.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.filter{padding:8px 11px;border-radius:9px;border:1px solid var(--line);background:#202735;color:var(--muted);font-weight:800;font-size:12px}.filter.active{background:#eafaff;color:#101820;border-color:#eafaff}.graffiti-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;max-height:590px;overflow:auto;padding:2px 3px 5px}.graffiti{min-height:65px;border:1px solid #76323a;background:#371f28;color:#fff;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;font-weight:900;transition:transform .12s,border-color .12s}.graffiti:hover{transform:translateY(-2px)}.graffiti .id{font-size:18px;line-height:1.2}.graffiti .status{font-size:9px;letter-spacing:.035em}.graffiti.found{background:#123b2b;border-color:#218956;color:#aaffd0}.graffiti.found .status{color:var(--green)}.empty{padding:24px 8px;text-align:center;color:var(--muted);grid-column:1/-1}.bottom-note{margin:14px 0 4px;color:var(--muted);font-size:12px;text-align:center}.toast{position:fixed;bottom:20px;left:50%;translate:-50% 20px;background:#17251e;border:1px solid #2e9b66;color:#c5ffdf;padding:12px 16px;border-radius:12px;box-shadow:0 10px 40px #0007;opacity:0;pointer-events:none;transition:.2s;z-index:20;font-weight:800}.toast.show{opacity:1;translate:-50% 0}.complete{display:none;margin:0 0 15px;padding:14px;border-radius:14px;border:1px solid #27c77b;background:linear-gradient(100deg,#123d2c,#18342f);font-weight:850}.complete.show{display:block}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.map{min-height:300px;aspect-ratio:1.2/1}.graffiti-grid{grid-template-columns:repeat(6,minmax(0,1fr));max-height:none}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.shell{padding:12px}.logo{width:42px;height:42px}.stats{gap:7px}.stat{padding:11px}.map{min-height:275px}.graffiti-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.graffiti{min-height:59px}.graffiti .id{font-size:17px}.panel-head{padding:13px}.top-actions{width:100%}.top-actions .btn{flex:1}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+ <div class="brand"><div class="logo" aria-hidden="true">🎨</div><div><div class="eyebrow">TECNOMATH · EXPLORACIÓN URBANA</div><h1>GRAFITI HUNT <span style="color:var(--cyan)">100</span></h1><p>Recorre la ciudad y completa tu colección.</p></div></div>
+ <div class="top-actions"><button class="btn" id="resetBtn" type="button">↺ Reiniciar progreso</button><button class="btn primary" id="showMissing" type="button">Ver faltantes</button></div>
+</header>
+<section class="stats" aria-label="Resumen de colección">
+ <div class="stat"><div class="label">ENCONTRADOS</div><div class="num green" id="foundCount">0</div></div>
+ <div class="stat"><div class="label">FALTANTES</div><div class="num red" id="missingCount">100</div></div>
+ <div class="stat"><div class="label">PORCENTAJE</div><div class="num" id="percentCount">0%</div></div>
+ <div class="stat"><div class="label">COLECCIÓN</div><div class="num" id="fractionCount">0/100</div></div>
+</section>
+<div class="progress-wrap"><div class="progress-head"><span>PROGRESO TOTAL</span><span id="progressLabel">0 de 100 grafitis</span></div><div class="track" role="progressbar" aria-label="Progreso de grafitis encontrados" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="fill" id="progressFill"></div></div></div>
+<div class="complete" id="completeBanner" role="status">🏆 ¡COLECCIÓN COMPLETA! Encontraste los 100 grafitis. ¡Leyenda del arte urbano!</div>
+<div class="layout">
+ <section class="panel">
+  <div class="panel-head"><div><h2>🗺️ Mapa de la ciudad</h2><p>Selecciona un marcador para cambiar su estado.</p></div><span class="eyebrow">100 PUNTOS</span></div>
+  <div class="map-wrap"><div class="map" id="map" role="group" aria-label="Mapa ilustrado con 100 ubicaciones de grafitis"><div class="blocks"></div><div class="park one"></div><div class="park two"></div><div class="water"></div><span class="map-label" style="left:8%;top:35%">BARRIO NORTE</span><span class="map-label" style="right:9%;top:53%">CENTRO</span><span class="map-label" style="left:12%;bottom:10%">DISTRITO SUR</span><span class="map-label" style="right:6%;bottom:34%">MUELLE</span><div class="pins" id="pins"></div></div><div class="map-legend"><span><i class="dot red"></i>Faltante</span><span><i class="dot green"></i>Encontrado</span><span>💡 Pulsa un número para marcarlo</span></div></div>
+ </section>
+ <section class="panel">
+  <div class="panel-head"><div><h2>🎯 Tu colección</h2><p id="listSubtitle">100 grafitis por encontrar</p></div></div>
+  <div class="list-area"><div class="filters" role="group" aria-label="Filtrar grafitis"><button class="filter active" data-filter="all" type="button">TODOS (100)</button><button class="filter" data-filter="missing" type="button">FALTANTES</button><button class="filter" data-filter="found" type="button">ENCONTRADOS</button></div><div class="graffiti-grid" id="graffitiGrid" aria-live="polite"></div></div>
+ </section>
+</div>
+<p class="bottom-note">Tu progreso se guarda automáticamente en este dispositivo. Los marcadores representan ubicaciones del mapa ficticio de este minijuego.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+const TOTAL=100, STORAGE_KEY='tecnomath_graffiti_hunt_100_v1';
+const $=id=>document.getElementById(id);
+let found=new Set(),filter='all',selected=1,toastTimer;
+try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(Array.isArray(saved))found=new Set(saved.filter(n=>Number.isInteger(n)&&n>=1&&n<=TOTAL));}catch(e){found=new Set();}
+function position(id){const col=(id-1)%10,row=Math.floor((id-1)/10);return{x:6+col*9.7+(row%2?2:0),y:8+row*9.1};}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify([...found].sort((a,b)=>a-b)));}catch(e){notify('No se pudo guardar: el navegador bloqueó el almacenamiento.');}}
+function notify(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2100);}
+function setFound(id){if(found.has(id)){found.delete(id);notify('Grafiti #'+String(id).padStart(2,'0')+' marcado como faltante.');}else{found.add(id);notify('¡Grafiti #'+String(id).padStart(2,'0')+' encontrado!');}selected=id;save();render();}
+function render(){
+ const count=found.size,missing=TOTAL-count,pct=Math.round(count/TOTAL*100);
+ $('foundCount').textContent=count;$('missingCount').textContent=missing;$('percentCount').textContent=pct+'%';$('fractionCount').textContent=count+'/'+TOTAL;$('progressLabel').textContent=count+' de '+TOTAL+' grafitis';$('progressFill').style.width=pct+'%';$('progressTrack').setAttribute('aria-valuenow',String(count));$('completeBanner').classList.toggle('show',count===TOTAL);$('listSubtitle').textContent=missing+' grafitis por encontrar';
+ document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+ const pins=$('pins');pins.replaceChildren();const grid=$('graffitiGrid');grid.replaceChildren();
+ for(let id=1;id<=TOTAL;id++){const p=position(id),isFound=found.has(id);
+  const pin=document.createElement('button');pin.type='button';pin.className='pin'+(isFound?' found':'')+(selected===id?' selected':'');pin.style.left=p.x+'%';pin.style.top=p.y+'%';pin.setAttribute('aria-label','Grafiti '+id+', '+(isFound?'encontrado':'faltante')+'. Pulsar para cambiar estado');pin.title='Grafiti #'+id+' · '+(isFound?'Encontrado':'Faltante');const span=document.createElement('span');span.textContent=id;pins.append(pin);pin.append(span);pin.addEventListener('click',()=>setFound(id));
+  if(filter==='found'&&!isFound||filter==='missing'&&isFound)continue;
+  const card=document.createElement('button');card.type='button';card.className='graffiti'+(isFound?' found':'');card.setAttribute('aria-label','Grafiti '+id+', '+(isFound?'encontrado':'faltante')+'. Pulsar para cambiar estado');card.setAttribute('aria-pressed',String(isFound));const num=document.createElement('span');num.className='id';num.textContent=String(id).padStart(2,'0');const status=document.createElement('span');status.className='status';status.textContent=isFound?'✓ ENCONTRADO':'✕ FALTANTE';card.append(num,status);card.addEventListener('click',()=>setFound(id));grid.append(card);
+ }
+ if(!grid.children.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=filter==='found'?'Todavía no has encontrado ningún grafiti.':'¡No quedan grafitis pendientes!';grid.append(empty);}
+}
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;render();}));
+$('showMissing').addEventListener('click',()=>{filter='missing';render();$('graffitiGrid').scrollIntoView({behavior:'smooth',block:'start'});});
+$('resetBtn').addEventListener('click',()=>{if(!found.size){notify('Aún no hay progreso que reiniciar.');return;}if(confirm('¿Seguro que quieres borrar los '+found.size+' grafitis encontrados?')){found.clear();selected=1;save();filter='all';render();notify('Progreso reiniciado.');}});
+render();
+})();
+</script>
+</body>
+</html>
