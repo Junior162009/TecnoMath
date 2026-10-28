@@ -31,4 +31,22 @@ function openActivity(id){const a=activities.find(x=>x.id===id);if(!student){toa
 async function submitQuiz(e,a){e.preventDefault();const fd=new FormData(e.target);let correct=0;const answers=a.questions.map((q,i)=>{const v=Number(fd.get('q'+i));if(v===q.answer)correct++;return v});const percentage=Math.round(correct/a.questions.length*100);const {error}=await db.from('edu_submissions').insert({activity_id:a.id,student_name:student,answers,score:correct,percentage,status:'submitted'});if(error){if(error.code==='23505')toast('Ya tienes una entrega registrada para esta actividad.');else toast('No se pudo guardar la entrega.');return}closeModal();loadSubmissionCount();openModal(`<h2>✅ Entrega registrada</h2><p>Tu resultado provisional es:</p><div style="font-size:42px;color:var(--green);font-weight:900">${percentage}%</div><p>${correct} de ${a.questions.length} respuestas correctas.</p><p class="muted">El docente puede revisar y devolver comentarios desde el sistema.</p><button class="btn primary" onclick="closeModal()">Continuar</button>`)}
 function showTab(name){['inicio','materias','actividades','recursos'].forEach(x=>{document.querySelector('#view-'+x).style.display=x===name?'block':'none';const b=document.querySelector('#tab-'+x);if(b)b.classList.toggle('active',x===name)})}
 function openModal(html){document.querySelector('#dialog').innerHTML=html;document.querySelector('#modal').classList.add('show')}function closeModal(){document.querySelector('#modal').classList.remove('show')}document.querySelector('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};function toast(t){const x=document.querySelector('#toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2600)}function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}function safeUrl(u){try{const x=new URL(u);return ['https:','http:'].includes(x.protocol)?x.href:'#'}catch{return '#'}}init();
-</script></body></html>
+</script><script>
+/* Acceso directo añadido para el nuevo quiz independiente HappyBander. */
+(function(){
+  const link='../games/quiz-happybander/';
+  function addCard(containerId,kind){
+    const container=document.getElementById(containerId);if(!container||container.querySelector('[data-happybander-quiz]'))return;
+    const card=document.createElement('article');card.className='card'+(kind==='quick'?'':'');
+    card.dataset.happybanderQuiz='true';
+    card.innerHTML='<div class="icon">🍢</div><span class="tag">Emprendimiento</span><h3>Quiz HappyBander</h3><p class="muted">Practica la exposición con 30 preguntas, respuestas abiertas por voz, opciones ABCD y cálculos.</p><a class="btn primary" href="'+link+'">Comenzar quiz →</a>';
+    container.appendChild(card);
+  }
+  function install(){
+    addCard('quick','quick');addCard('resources','resources');
+    ['quick','resources'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.happybanderObserver){el.dataset.happybanderObserver='1';new MutationObserver(()=>addCard(id,id)).observe(el,{childList:true});}});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
+</script>
+</body></html>
