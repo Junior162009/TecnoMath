@@ -12,7 +12,7 @@
 <script>
 const QUESTIONS=[
 {type:"ABCD",topic:"Producto",q:"¿Qué producto principal ofrece HappyBander?",o:["Hamburguesas artesanales","Banderillas coreanas de salchicha o queso mozzarella","Helados y malteadas","Empanadas tradicionales"],a:1,e:"HappyBander se centra en banderillas coreanas, con alternativas como salchicha o queso mozzarella."},
-{type:"Verdadero o falso",topic:"Objetivo",q:"Una meta del emprendimiento es ofrecer una alternativa gastronómica llamativa y de calidad en Soledad.",o:["Verdadero","Falso"],a:0,e:"La propuesta busca una opción novedosa y de calidad para sus clientes."},
+
 {type:"Abierta",topic:"Visión",q:"Cuéntame con tus palabras: ¿cuál es la visión de HappyBander y qué quiere lograr a futuro?",k:["2035","referente","soledad","regional"],e:"La visión proyecta consolidar a HappyBander como referente gastronómico en Soledad y crecer a nivel municipal y regional hacia 2035.",model:"Menciona el año y la meta futura tal como aparecen en el proyecto."},
 {type:"ABCD",topic:"Valores",q:"¿Cuál grupo refleja valores adecuados para atender al cliente?",o:["Honestidad, respeto y amabilidad","Descuido, demora y desinterés","Secreto, engaño y desorden","Competencia sin respeto"],a:0,e:"El respeto, la honestidad y la amabilidad ayudan a generar confianza."},
 {type:"Abierta",topic:"Misión",q:"Explícame la misión de HappyBander y cómo se nota en el producto y la atención.",k:["calidad","cliente","sabor","experiencia","banderilla"],e:"Relaciona la misión con banderillas de calidad, buen sabor y una experiencia positiva para el cliente.",model:"Habla del producto, la calidad y la experiencia del consumidor."},
@@ -42,7 +42,7 @@ const QUESTIONS=[
 {type:"ABCD",topic:"Servicio",q:"¿Qué conviene hacer ante una queja legítima de un cliente?",o:["Escuchar, responder con respeto y buscar una solución","Discutir con el cliente","Ignorarlo siempre","Prometer algo imposible"],a:0,e:"Una atención respetuosa permite resolver problemas y conservar la confianza."},
 {type:"ABCD",topic:"Calidad",q:"¿Por qué conviene estandarizar las recetas y porciones?",o:["Para mantener calidad y controlar costos","Para que cada producto sea diferente al azar","Para impedir calcular inventario","Para cambiar siempre el sabor"],a:0,e:"Las porciones consistentes ayudan a mantener calidad, calcular costos y planificar inventario."},
 {type:"Abierta",topic:"Defensa del proyecto",q:"Si el jurado pregunta por qué HappyBander es una idea viable, ¿qué argumentos presentarías?",k:["mercado","producto","calidad","precio","diferencia","viabilidad","cliente","finanzas"],e:"Defiende la oportunidad de mercado, la propuesta de valor, el público, la promoción, los costos y la viabilidad usando datos del documento.",model:"Organiza tu respuesta en oportunidad, producto, operación y viabilidad económica."},
-{type:"ABCD",topic:"Indicadores",q:"¿Cómo puedes comprobar si las ventas alcanzan para cubrir los gastos?",o:["Comparar ingresos y costos y calcular el punto de equilibrio","Contar solo seguidores en redes","Mirar solo el empaque","Sumar ventas sin considerar costos"],a:0,e:"Comparar ingresos, costos y punto de equilibrio permite evaluar la sostenibilidad del negocio."}
+
 ];
 const KEY="tecnomath_happybander_quiz_v1";let state={i:0,answers:{},checked:{},finished:false};const $=id=>document.getElementById(id);let recognition=null,voiceText="";
 function normalize(v){return String(v||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9$ ]/g," ").replace(/\s+/g," ").trim()}
