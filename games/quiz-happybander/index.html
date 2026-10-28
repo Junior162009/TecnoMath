@@ -45,6 +45,8 @@ const QUESTIONS=[
 
 ];
 const KEY="tecnomath_happybander_quiz_v1";let state={i:0,answers:{},checked:{},finished:false};const $=id=>document.getElementById(id);let recognition=null,voiceText="";
+function hide(id){const el=$(id);if(el)el.classList.add("hidden")}
+function show(id){const el=$(id);if(el)el.classList.remove("hidden")}
 function normalize(v){return String(v||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9$ ]/g," ").replace(/\s+/g," ").trim()}
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 async function saveProgress(){saveLocal();if(window.TecnomathAuth){try{await window.TecnomathAuth.saveGameProgress("quiz-happybander",state);$("syncInfo").textContent="Progreso guardado en este dispositivo; sincronización de cuenta disponible si has iniciado sesión."}catch(e){$("syncInfo").textContent="Progreso guardado en este dispositivo. La sincronización de cuenta no está disponible ahora."}}}
