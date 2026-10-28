@@ -538,5 +538,32 @@
     "entryFile": "index.html",
     "logoStoragePath": "",
     "packageStoragePath": ""
+  },
+  {
+    "id": "quiz-happybander",
+    "name": "🍢 Quiz HappyBander",
+    "desc": "Practica tu proyecto de emprendimiento con 30 preguntas, respuestas abiertas por voz, opción múltiple y cálculos.",
+    "description": "Entrevista interactiva para estudiar HappyBander: puedes escribir o dictar respuestas abiertas en español, escuchar las preguntas y guardar tu progreso.",
+    "url": "games/quiz-happybander/index.html",
+    "imageUrl": "",
+    "icon": "🎙️",
+    "category": "emprendimiento",
+    "deviceCompatibility": "both",
+    "evento": null,
+    "sourceType": "internal",
+    "status": "published",
+    "allowVoting": false,
+    "featured": true,
+    "order": 22,
+    "urlType": "internal",
+    "publishDate": "2026-10-28T13:03:30.715Z",
+    "authorName": "TecnoMath",
+    "grade": "Todos",
+    "folder": "games/quiz-happybander",
+    "folderPath": "games/quiz-happybander",
+    "entryFile": "index.html",
+    "logoStoragePath": "",
+    "packageStoragePath": "",
+    "packageFileName": ""
   }
 ]
