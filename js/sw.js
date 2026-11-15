@@ -17,7 +17,7 @@ self.addEventListener('fetch',event=>{
   const isStatic=/\.(?:css|js|mjs|svg|png|jpe?g|webp|avif|gif|woff2?|ttf|mp3|ogg|wav|ico)$/i.test(url.pathname);
   if(isStatic){
     const updatePromise=fetch(event.request).then(async response=>{
-      if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(event.request,response.clone())}
+      if(response&&response.status===200){const cache=await caches.open(CACHE_NAME);await cache.put(event.request,response.clone())}
       return response;
     }).catch(()=>null);
     event.waitUntil(updatePromise.then(()=>undefined));
