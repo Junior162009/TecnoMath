@@ -934,16 +934,17 @@
         }
 
         function normalizarClavePromo(value) {
-            return String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
-                .toLowerCase().replace(/[^a-z0-9]/g, '');
+            return String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
         function buscarPromocionDeJuego(game) {
             if (!game || !Array.isArray(promosActivas)) return null;
-            const gameUrl = String(game.url || '').trim().replace(/\\/+$/, '').toLowerCase();
+            let gameUrl = String(game.url || '').trim().toLowerCase();
+            while (gameUrl.endsWith('/')) gameUrl = gameUrl.slice(0, -1);
             const gameName = normalizarClavePromo(game.name);
             return promosActivas.find(promo => {
-                const promoUrl = String(promo.url || '').trim().replace(/\\/+$/, '').toLowerCase();
+                let promoUrl = String(promo.url || '').trim().toLowerCase();
+                while (promoUrl.endsWith('/')) promoUrl = promoUrl.slice(0, -1);
                 const promoName = normalizarClavePromo(promo.nombre);
                 const sameUrl = promoUrl && gameUrl && promoUrl === gameUrl;
                 const sameName = promoName && gameName &&
