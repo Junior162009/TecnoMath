@@ -503,3 +503,61 @@ header{padding:10px clamp(14px,3vw,34px)!important}
   #promoBubbleContainer .promo-feature-link{min-height:530px!important}
   #promoBubbleContainer .promo-dots{margin-top:575px!important}
 }
+
+/* Patrocinadores: tarjetas compactas con identidad dorada, sin competir con promociones. */
+.sponsors-section{
+  width:min(calc(100% - 28px),1120px)!important;
+  max-width:1120px!important;margin:26px auto 30px!important;padding:0!important;
+}
+.sponsors-label{
+  margin:0 0 14px!important;color:#d9c28a!important;
+  font:800 11px/1.4 Inter,system-ui,sans-serif!important;
+  letter-spacing:.14em!important;text-shadow:none!important;
+}
+.sponsors-grid{
+  display:flex!important;flex-wrap:wrap!important;justify-content:center!important;
+  align-items:stretch!important;gap:12px!important;
+}
+.sponsors-grid .sponsor-card{
+  width:clamp(148px,17vw,184px)!important;min-height:154px!important;
+  padding:13px 12px!important;gap:9px!important;
+  border:1.5px solid rgba(244,201,107,.78)!important;border-radius:17px!important;
+  background:linear-gradient(145deg,rgba(37,43,55,.96),rgba(17,26,43,.98))!important;
+  box-shadow:0 7px 22px rgba(0,0,0,.2),inset 0 0 0 1px rgba(244,201,107,.08)!important;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+.sponsors-grid .sponsor-card:hover{
+  transform:translateY(-3px)!important;border-color:#ffdf8b!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.28),0 0 18px rgba(244,201,107,.13)!important;
+}
+.sponsors-grid .sponsor-icon{
+  width:88px!important;height:76px!important;flex:0 0 76px!important;
+  padding:7px!important;border:0!important;border-radius:11px!important;
+  background:rgba(255,255,255,.055)!important;color:#f4c96b!important;
+}
+.sponsors-grid .sponsor-icon img{
+  width:100%!important;height:100%!important;object-fit:contain!important;
+  border-radius:7px!important;
+}
+.sponsors-grid .sponsor-name{
+  color:#f4f6fb!important;font:750 12px/1.35 Inter,system-ui,sans-serif!important;
+  overflow-wrap:anywhere;
+}
+.sponsors-grid .sponsor-phone{
+  color:#f4c96b!important;font:650 10px/1.35 Inter,system-ui,sans-serif!important;
+}
+@media(max-width:600px){
+  .sponsors-section{width:calc(100% - 22px)!important;margin:20px auto 24px!important}
+  .sponsors-label{font-size:10px!important;margin-bottom:11px!important}
+  .sponsors-grid{gap:9px!important}
+  .sponsors-grid .sponsor-card{
+    width:calc(50% - 5px)!important;max-width:168px!important;min-height:137px!important;
+    padding:10px 8px!important;border-radius:14px!important;
+  }
+  .sponsors-grid .sponsor-icon{width:76px!important;height:64px!important;flex-basis:64px!important}
+  .sponsors-grid .sponsor-name{font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .sponsors-grid .sponsor-card{transition:none!important}
+}
+
