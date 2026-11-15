@@ -853,6 +853,11 @@
                 } else {
                     container.style.display = 'none';
                 }
+                // La promoción puede cargarse después del catálogo: vuelve a pintar
+                // para aplicar el orden y el tamaño especial sin perder el orden interno.
+                if (typeof projects !== 'undefined' && projects.length && typeof renderProjects === 'function') {
+                    renderProjects(currentActiveFilter || 'todos');
+                }
             } catch (e) {
                 console.warn('Promociones no disponibles:', e);
                 container.style.display = 'none';
