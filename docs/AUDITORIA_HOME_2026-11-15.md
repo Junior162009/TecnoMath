@@ -28,3 +28,14 @@ Rama revisada: `redisenio/experiencia-educativa`
 ## Siguiente paso recomendado
 
 Crear una previsualización aislada de esta rama y realizar pruebas visuales en anchos aproximados de 360 px, 768 px y 1366 px; luego medir carga inicial, imágenes y recursos externos con Lighthouse.
+
+## Segunda intervención: encabezado simplificado
+
+- Se agruparon los enlaces de votaciones, ranking en vivo y Edugo en un desplegable accesible llamado **Más**.
+- Se conservaron los accesos de autenticación, cierre de sesión y administración en el área principal; no se eliminaron enlaces ni destinos.
+- Se reorganizó el encabezado con CSS Grid: marca, acciones principales y controles en una fila; navegación secundaria en otra.
+- En móvil, la marca y los controles quedan arriba, las acciones debajo y el menú de navegación se abre bajo demanda.
+- Se ocultó la etiqueta superior redundante de plataforma educativa para reducir ruido visual; el nombre y subtítulo de TecnoMath siguen visibles.
+- Se actualizaron los parámetros de versión de CSS y JavaScript a `v=2` para evitar que el navegador reutilice los archivos anteriores.
+- Verificación posterior: sintaxis del JavaScript de interfaz correcta; llaves CSS balanceadas; se comprobó que los enlaces originales y los identificadores de autenticación y administración siguen presentes.
+- Pendiente: revisión visual con previsualización de la rama en tamaños reales y comprobación funcional interactiva del menú.
