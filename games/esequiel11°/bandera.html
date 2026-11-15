@@ -353,7 +353,7 @@
         </div>
 
         <div class="flag-container" id="flagDisplay">
-            <img src="https://flagcdn.com/128x96/es.png" alt="Bandera" />
+            <img src="https://flagcdn.com/128x96/es.png" alt="Bandera" decoding="async" fetchpriority="high" />
         </div>
         <h1 class="question-prompt" id="questionPrompt">¿Qué país corresponde a esta bandera?</h1>
         <p class="question-help">Completa el nombre del país usando el teclado.</p>
@@ -561,7 +561,7 @@
 
         // ---------- ACTUALIZAR UI ----------
         function actualizarUI() {
-            flagDisplay.innerHTML = `<img src="https://flagcdn.com/128x96/${paisActual.codigo}.png" alt="Bandera de ${paisActual.nombre}" />`;
+            flagDisplay.innerHTML = `<img src="https://flagcdn.com/128x96/${paisActual.codigo}.png" alt="Bandera de ${paisActual.nombre}" decoding="async" fetchpriority="high" />`;
 
             lettersContainer.innerHTML = '';
             const numLetras = paisActual.nombreSinEspacios.length;
