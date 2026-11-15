@@ -1181,6 +1181,7 @@
             filtered.forEach((proj, index) => {
                 const card = document.createElement('a');
                 card.className = 'project-card';
+                card.dataset.category = proj.category || 'sin-categoria';
                 if (proj.swfUrl) {
                     card.href = '#';
                     card.addEventListener('click', (e) => {
