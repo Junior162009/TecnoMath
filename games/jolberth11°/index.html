@@ -797,6 +797,8 @@ function loadAsset(key){
   const next = () => {
     if (i >= list.length) return;
     const img = new Image();
+    img.decoding = 'async';
+    img.fetchPriority = (key === 'player' || key === 'bg') ? 'high' : 'auto';
     img.onload  = () => { ASSETS[key] = img; };
     img.onerror = () => { i++; next(); };
     img.src = list[i];
