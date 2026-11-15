@@ -413,3 +413,93 @@ header{padding:10px clamp(14px,3vw,34px)!important}
 @media(prefers-reduced-motion:reduce){
   .promo-bubble,.promo-feature-action{transition:none!important}
 }
+
+
+/* Ajuste de jerarquía visual: el logo del patrocinador debe ser el protagonista */
+#promoBubbleContainer{
+  position:relative!important;
+  width:min(calc(100% - 32px),1360px)!important;
+  max-width:1360px!important;
+  min-height:540px!important;
+  padding-top:48px!important;
+  margin:34px auto 42px!important;
+}
+#promoBubbleContainer::before{
+  content:"✦ PROMOCIÓN PATROCINADA";left:4px!important;top:0!important;
+  font-size:13px!important;letter-spacing:.19em!important;
+}
+#promoBubbleContainer .promo-bubble{
+  position:absolute!important;inset:48px 0 auto 0!important;
+  width:100%!important;max-width:none!important;height:440px!important;min-height:440px!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;
+  border:1px solid rgba(244,201,107,.7)!important;border-radius:30px!important;
+  background:
+    radial-gradient(ellipse at 22% 50%,rgba(55,215,232,.18),transparent 36%),
+    radial-gradient(ellipse at 78% 45%,rgba(154,131,255,.2),transparent 40%),
+    linear-gradient(120deg,#101c31,#192943 55%,#211a39)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 48px rgba(244,201,107,.13)!important;
+}
+#promoBubbleContainer .promo-bubble.active{display:block!important;opacity:1!important;visibility:visible!important;transform:none!important}
+#promoBubbleContainer .promo-bubble.inactive{display:none!important;opacity:0!important;visibility:hidden!important}
+#promoBubbleContainer .promo-feature-link{
+  display:grid!important;width:100%!important;height:100%!important;min-height:440px!important;
+  grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr)!important;
+  align-items:center!important;gap:0!important;
+}
+#promoBubbleContainer .promo-feature-media{
+  height:100%!important;min-height:440px!important;padding:34px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  background:radial-gradient(ellipse at center,rgba(255,255,255,.12),rgba(8,15,28,.12) 65%,transparent 100%)!important;
+}
+#promoBubbleContainer .promo-feature-media::after{display:none!important}
+#promoBubbleContainer .promo-feature-media img{
+  width:100%!important;height:100%!important;max-width:520px!important;max-height:360px!important;
+  object-fit:contain!important;object-position:center!important;
+  border-radius:20px!important;filter:drop-shadow(0 20px 32px rgba(0,0,0,.4))!important;
+}
+#promoBubbleContainer .promo-feature-media.no-image::before{font-size:clamp(120px,18vw,220px)!important}
+#promoBubbleContainer .promo-feature-copy{
+  align-items:flex-start!important;justify-content:center!important;
+  gap:22px!important;padding:48px clamp(28px,5vw,76px)!important;text-align:left!important;
+}
+#promoBubbleContainer .promo-feature-eyebrow{font-size:13px!important;letter-spacing:.2em!important}
+#promoBubbleContainer .promo-feature-copy h3{
+  font-size:clamp(40px,5.2vw,68px)!important;line-height:.99!important;
+  max-width:620px!important;letter-spacing:-.055em!important;
+}
+#promoBubbleContainer .promo-feature-copy p{
+  max-width:560px!important;font-size:clamp(17px,1.7vw,21px)!important;
+  line-height:1.75!important;color:#e0e8f5!important;
+}
+#promoBubbleContainer .promo-feature-action{
+  min-height:56px!important;padding:0 30px!important;font-size:14px!important;
+  letter-spacing:.1em!important;box-shadow:0 12px 30px rgba(244,166,85,.3)!important;
+}
+#promoBubbleContainer .promo-bubble .timer-badge{top:18px!important;right:20px!important}
+#promoBubbleContainer .promo-dots{margin-top:504px!important}
+@media(max-width:760px){
+  #promoBubbleContainer{width:calc(100% - 22px)!important;min-height:650px!important;margin:26px auto 34px!important}
+  #promoBubbleContainer .promo-bubble{inset:42px 0 auto 0!important;height:560px!important;min-height:560px!important;border-radius:24px!important}
+  #promoBubbleContainer .promo-feature-link{
+    display:flex!important;flex-direction:column!important;min-height:560px!important;
+    align-items:stretch!important;
+  }
+  #promoBubbleContainer .promo-feature-media{
+    flex:0 0 260px!important;height:260px!important;min-height:260px!important;padding:22px!important;
+  }
+  #promoBubbleContainer .promo-feature-media img{max-width:100%!important;max-height:220px!important}
+  #promoBubbleContainer .promo-feature-copy{padding:22px 24px 28px!important;gap:13px!important}
+  #promoBubbleContainer .promo-feature-eyebrow{font-size:10px!important}
+  #promoBubbleContainer .promo-feature-copy h3{font-size:clamp(34px,9vw,48px)!important}
+  #promoBubbleContainer .promo-feature-copy p{font-size:15px!important;line-height:1.6!important}
+  #promoBubbleContainer .promo-feature-action{min-height:48px!important;font-size:12px!important}
+  #promoBubbleContainer .promo-dots{margin-top:620px!important}
+}
+@media(max-width:390px){
+  #promoBubbleContainer .promo-feature-media{flex-basis:225px!important;height:225px!important;min-height:225px!important}
+  #promoBubbleContainer .promo-feature-media img{max-height:190px!important}
+  #promoBubbleContainer{min-height:620px!important}
+  #promoBubbleContainer .promo-bubble{height:530px!important;min-height:530px!important}
+  #promoBubbleContainer .promo-feature-link{min-height:530px!important}
+  #promoBubbleContainer .promo-dots{margin-top:575px!important}
+}
