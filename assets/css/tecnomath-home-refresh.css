@@ -84,7 +84,6 @@ header{
 }
 .news-ticker{display:none!important}
 #promoBubbleContainer{max-width:1120px!important;margin:18px auto!important;min-height:0!important}
-.promo-bubble-container:has(.promo-bubble.inactive){display:none!important}
 .promo-bubble{
   position:relative!important;left:auto!important;top:auto!important;transform:none!important;
   width:min(100%,760px)!important;max-width:760px!important;min-height:0!important;
