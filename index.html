@@ -592,7 +592,7 @@
             *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; }
         }
     </style>
-    <link rel="stylesheet" href="assets/css/tecnomath-home-refresh.css?v=2">
+    <link rel="stylesheet" href="assets/css/tecnomath-home-refresh.css?v=3">
     <script src="js/games-loader.js?v=1" defer></script>
     <!-- Metricool: seguimiento de visitas aislado para no crear funciones globales. -->
     <script>
@@ -893,14 +893,68 @@
         }
 
         function llenarBurbuja(bubble, promo) {
-            bubble.innerHTML = `
-                <a href="${promo.url}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; align-items:center; gap:8px;">
-                    <img src="${promo.imagen || 'img/default-promo.png'}" alt="${promo.nombre}">
-                    <h3>${promo.nombre}</h3>
-                    <p>${promo.descripcion}</p>
-                </a>
-                <span class="timer-badge">${calcularDiasRestantes(promo.fechaFin)} días</span>
-            `;
+            bubble.replaceChildren();
+
+            const link = document.createElement('a');
+            link.className = 'promo-feature-link';
+            link.href = promo.url || '#';
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.setAttribute('aria-label', 'Jugar ' + String(promo.nombre || 'juego promocionado'));
+
+            const media = document.createElement('div');
+            media.className = 'promo-feature-media';
+            const img = document.createElement('img');
+            img.src = promo.imagen || 'img/default-promo.png';
+            img.alt = promo.nombre || 'Juego promocionado';
+            img.loading = 'eager';
+            img.decoding = 'async';
+            img.onerror = function() { this.style.display = 'none'; media.classList.add('no-image'); };
+            media.appendChild(img);
+
+            const copy = document.createElement('div');
+            copy.className = 'promo-feature-copy';
+            const eyebrow = document.createElement('span');
+            eyebrow.className = 'promo-feature-eyebrow';
+            eyebrow.textContent = '✦ JUEGO PATROCINADO';
+            const title = document.createElement('h3');
+            title.textContent = promo.nombre || 'Juego destacado';
+            const description = document.createElement('p');
+            description.textContent = promo.descripcion || 'Descubre esta experiencia educativa.';
+            const action = document.createElement('span');
+            action.className = 'promo-feature-action';
+            action.textContent = 'JUGAR AHORA ↗';
+            copy.append(eyebrow, title, description, action);
+            link.append(media, copy);
+
+            const timer = document.createElement('span');
+            timer.className = 'timer-badge';
+            timer.textContent = calcularDiasRestantes(promo.fechaFin) + ' días';
+            bubble.append(link, timer);
+        }
+
+        function normalizarClavePromo(value) {
+            return String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+                .toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function buscarPromocionDeJuego(game) {
+            if (!game || !Array.isArray(promosActivas)) return null;
+            const gameUrl = String(game.url || '').trim().replace(/\\/+$/, '').toLowerCase();
+            const gameName = normalizarClavePromo(game.name);
+            return promosActivas.find(promo => {
+                const promoUrl = String(promo.url || '').trim().replace(/\\/+$/, '').toLowerCase();
+                const promoName = normalizarClavePromo(promo.nombre);
+                const sameUrl = promoUrl && gameUrl && promoUrl === gameUrl;
+                const sameName = promoName && gameName &&
+                    (promoName === gameName || (promoName.length >= 5 && gameName.startsWith(promoName)) ||
+                     (gameName.length >= 5 && promoName.startsWith(gameName)));
+                return sameUrl || sameName;
+            }) || null;
+        }
+
+        function esJuegoPatrocinado(game) {
+            return Boolean(buscarPromocionDeJuego(game));
         }
 
         function calcularDiasRestantes(fechaFin) {
@@ -1163,8 +1217,12 @@
             } else if (filterCategory && filterCategory !== 'todos') {
                 filtered = filtered.filter(p => p.category === filterCategory);
             }
-            // No ordenar aquí: js/published-games.js aplica voting_game_order de Supabase.
-            // Los juegos nuevos que aún no estén en la configuración quedan al final.
+            // Se conserva el orden de Supabase dentro de cada grupo, pero las promociones
+            // activas y vinculadas a un juego se muestran primero para darles visibilidad.
+            filtered = filtered
+                .map((game, originalIndex) => ({ game, originalIndex }))
+                .sort((a, b) => Number(esJuegoPatrocinado(b.game)) - Number(esJuegoPatrocinado(a.game)) || a.originalIndex - b.originalIndex)
+                .map(item => item.game);
 
             if (filtered.length === 0) {
                 const empty = document.createElement('div');
@@ -1182,6 +1240,12 @@
                 const card = document.createElement('a');
                 card.className = 'project-card';
                 card.dataset.category = proj.category || 'sin-categoria';
+                const promoJuego = buscarPromocionDeJuego(proj);
+                if (promoJuego) {
+                    card.classList.add('is-sponsored-game');
+                    card.dataset.sponsored = 'true';
+                    card.setAttribute('aria-label', proj.name + ' · Juego patrocinado');
+                }
                 if (proj.swfUrl) {
                     card.href = '#';
                     card.addEventListener('click', (e) => {
