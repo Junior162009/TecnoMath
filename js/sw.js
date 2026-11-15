@@ -14,7 +14,7 @@ self.addEventListener('fetch',event=>{
     event.respondWith(fetch(event.request,{cache:'no-store'}).catch(()=>caches.match(event.request)));
     return;
   }
-  const isStatic=/\\.(?:css|js|mjs|svg|png|jpe?g|webp|avif|gif|woff2?|ttf|mp3|ogg|wav|ico)$/i.test(url.pathname);
+  const isStatic=/\.(?:css|js|mjs|svg|png|jpe?g|webp|avif|gif|woff2?|ttf|mp3|ogg|wav|ico)$/i.test(url.pathname);
   if(isStatic){
     event.respondWith((async()=>{
       const cached=await caches.match(event.request);
