@@ -1,6 +1,6 @@
 const CACHE_NAME='tecnomath-offline-v19-fast-cache';
 const OFFLINE_FALLBACK_PAGE='/index.html';
-const PRECACHE_ASSETS=['/','/index.html','/js/shared.js','/js/i18n.js','/locales/index.json','/locales/es/common.json','/locales/en/common.json','/js/firebase-config.js','/js/tecnomath-auth.js','/js/admin-guard.js','/js/theme-sync.js?v=16','/js/event-theme-guard.js?v=16','/css/amor-amistad.css?v=4','/css/admin.css','/manifest.json','/pages/auth.html','/pages/admin/index.html','/pages/admin/games-manager.html','/js/class-a-direct-publisher.js','/pages/admin/game-order.html','/pages/game.html','/pages/eco-collector.html','/pages/animalandia.html','/pages/ods-2048.html','/pages/coral-guardian.html','/pages/eco-barrio.html','/pages/emoji-math.html','/img/icon-192.png','/img/icon-512.png'];
+const PRECACHE_ASSETS=['/','/index.html','/js/shared.js','/js/i18n.js','/locales/index.json','/locales/es/common.json','/locales/en/common.json','/js/firebase-config.js','/js/tecnomath-auth.js','/js/admin-guard.js','/js/theme-sync.js?v=16','/css/amor-amistad.css?v=4','/css/admin.css','/manifest.json','/pages/auth.html','/pages/admin/index.html','/pages/admin/games-manager.html','/js/class-a-direct-publisher.js','/pages/admin/voting-order.html','/pages/game.html','/pages/eco-collector.html','/pages/animalandia.html','/pages/ods-2048.html','/pages/coral-guardian.html','/pages/eco-barrio.html','/pages/emoji-math.html','/img/icon-192.png','/img/icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(PRECACHE_ASSETS).catch(err=>console.warn('Precaché parcial:',err)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(names=>Promise.all(names.filter(name=>name.startsWith('tecnomath-offline-')&&name!==CACHE_NAME).map(name=>caches.delete(name)))));self.clients.claim()});
 if(self.registration.navigationPreload)self.registration.navigationPreload.enable().catch(()=>{});
@@ -16,14 +16,15 @@ self.addEventListener('fetch',event=>{
   }
   const isStatic=/\.(?:css|js|mjs|svg|png|jpe?g|webp|avif|gif|woff2?|ttf|mp3|ogg|wav|ico)$/i.test(url.pathname);
   if(isStatic){
+    const updatePromise=fetch(event.request).then(async response=>{
+      if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(event.request,response.clone())}
+      return response;
+    }).catch(()=>null);
+    event.waitUntil(updatePromise.then(()=>undefined));
     event.respondWith((async()=>{
       const cached=await caches.match(event.request);
       if(cached)return cached;
-      try{
-        const response=await fetch(event.request);
-        if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(event.request,response.clone())}
-        return response;
-      }catch(_){return new Response('Recurso no disponible sin conexión',{status:503})}
+      return await updatePromise||new Response('Recurso no disponible sin conexión',{status:503});
     })());
     return;
   }
