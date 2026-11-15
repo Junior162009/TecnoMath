@@ -1177,7 +1177,7 @@
                 return;
             }
 
-            filtered.forEach(proj => {
+            filtered.forEach((proj, index) => {
                 const card = document.createElement('a');
                 card.className = 'project-card';
                 if (proj.swfUrl) {
@@ -1200,6 +1200,11 @@
                 iconDiv.className = 'project-icon';
                 if (proj.imageUrl && proj.imageUrl.trim() !== '') {
                     const img = document.createElement('img');
+                    img.loading = index < 4 ? 'eager' : 'lazy';
+                    img.decoding = 'async';
+                    img.width = 70;
+                    img.height = 70;
+                    if (index < 4) img.fetchPriority = 'high';
                     img.src = proj.imageUrl;
                     img.alt = proj.name;
                     img.onerror = function() { this.remove(); const span = document.createElement('span'); span.textContent = proj.icon || '🕹️'; iconDiv.appendChild(span); };
