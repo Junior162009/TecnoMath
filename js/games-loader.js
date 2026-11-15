@@ -9,7 +9,7 @@ function showLoader(){
   const d=document.createElement('div');d.id='tm-page-loader';d.innerHTML='<div class="tm-loader-box"><div class="tm-loader-logo">🎮</div><div class="tm-loader-title">TECNOMATH</div><div class="tm-loader-text">Cargando juegos y preparando la plataforma…</div><div class="tm-loader-track"><div class="tm-loader-bar"></div></div><div class="tm-loader-dots">•••</div></div>';document.body.appendChild(d);
 }
 function hideLoader(){if(loaderDone)return;loaderDone=true;const d=document.getElementById('tm-page-loader');if(d){d.classList.add('tm-loader-hide');setTimeout(()=>d.remove(),500)}document.documentElement.classList.remove('tm-loading')}
-showLoader();
+// La página principal se muestra de inmediato; las tareas secundarias cargan en segundo plano.
 function loadAuth(){return new Promise((resolve,reject)=>{if(window.TecnomathAuth)return resolve();const old=document.querySelector('script[data-tecnomath-auth]');if(old){old.addEventListener('load',resolve,{once:true});old.addEventListener('error',()=>reject(new Error('No se pudo cargar la autenticación TecnoMath.')),{once:true});return}const s=document.createElement('script');s.src='js/tecnomath-auth.js?v=20260914';s.dataset.tecnomathAuth='true';s.onload=resolve;s.onerror=()=>reject(new Error('No se pudo cargar la autenticación TecnoMath.'));document.head.appendChild(s)});}
 function loadAdminPortal(){return new Promise((resolve)=>{if(document.querySelector('script[data-tecnomath-admin-portal]'))return resolve();const s=document.createElement('script');s.src='js/tecnomath-admin-portal.js?v=20260914';s.dataset.tecnomathAdminPortal='true';s.onload=resolve;s.onerror=()=>resolve();document.head.appendChild(s)})}
 function addMeta(property,content){let m=document.head.querySelector(`meta[property="${property}"]`);if(!m){m=document.createElement('meta');m.setAttribute('property',property);document.head.appendChild(m)}m.content=content}
@@ -20,7 +20,15 @@ async function loadCatalog(){try{const r=await nativeFetch(`${CATALOG}?v=${Date.
 function injectCardStyles(){if(document.getElementById('tm-card-number-styles'))return;const s=document.createElement('style');s.id='tm-card-number-styles';s.textContent=`#projectsContainer .project-card{position:relative;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}#projectsContainer .project-card:hover{transform:translateY(-6px)}.tm-order-badge{position:absolute;top:10px;left:10px;z-index:30;padding:5px 8px;border-radius:999px;background:#060610dd;border:1px solid #00f5ff;color:#00f5ff;font:700 10px Arial,sans-serif;line-height:1;pointer-events:none}`;document.head.appendChild(s)}
 function markCards(){const box=document.getElementById('projectsContainer');if(!box)return;const cards=[...box.querySelectorAll('.project-card')];cards.forEach((card,i)=>{let badge=card.querySelector('.tm-order-badge');if(!badge){badge=document.createElement('span');badge.className='tm-order-badge';card.appendChild(badge)}badge.textContent=`#${i+1}`})}
 function waitForCards(timeout=7000){return new Promise(resolve=>{const started=Date.now();const check=()=>{const box=document.getElementById('projectsContainer');const cards=box?[...box.querySelectorAll('.project-card')]:[];if(cards.length||Date.now()-started>timeout){markCards();resolve()}else requestAnimationFrame(check)};check()})}
-async function boot(){try{await loadCatalog();try{await loadAuth();await loadAdminPortal()}catch(e){console.error('TecnoMath Auth:',e)}if(document.readyState==='loading')await new Promise(r=>document.addEventListener('DOMContentLoaded',r,{once:true}));await waitForCards();injectCardStyles();markCards();await new Promise(r=>setTimeout(r,350));}finally{hideLoader()}}
+async function boot(){
+  try{
+    if(document.readyState==='loading')await new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
+    // El catálogo y la interfaz principal no esperan a autenticación ni al portal de administración.
+    loadCatalog();
+    loadAuth().then(()=>loadAdminPortal()).catch(error=>console.error('TecnoMath Auth:',error));
+    waitForCards(2500).then(()=>{injectCardStyles();markCards()});
+  }finally{hideLoader()}
+}
 boot();
 window.TecnoMathCatalogReload=async()=>{await loadCatalog();markCards()};
 })();
