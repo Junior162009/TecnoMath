@@ -45,7 +45,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Tecnomath">
 <!-- Favicon dinámico -->
-    <link rel="icon" id="dynamicFavicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <link rel="icon" id="dynamicFavicon" href="/assets/icons/tecnomath-mark.svg">
 
     <!-- Ruffle para Flash -->
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
@@ -1283,7 +1283,7 @@
                     iconDiv.appendChild(img);
                 } else {
                     const span = document.createElement('span');
-                    span.textContent = proj.icon || '🕹️';
+                    span.innerHTML = '<img class="tm-icon" src="https://api.iconify.design/lucide/gamepad-2.svg" alt="" onerror="this.onerror=null;this.src=\'/assets/icons/fallback.svg\'">';
                     iconDiv.appendChild(span);
                 }
 
@@ -1325,8 +1325,7 @@
         function updateFavicon(emoji) {
             const favicon = document.getElementById('dynamicFavicon');
             if (favicon) {
-                const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
-                favicon.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+                favicon.href = '/assets/icons/tecnomath-mark.svg';
             }
         }
 
