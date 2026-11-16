@@ -1292,18 +1292,14 @@
                 nameDiv.textContent = proj.name;
 
                 if (proj.evento && proj.evento !== null) {
-                    const eventoEmojis = {
-                        'halloween': '🎃',
-                        'navidad': '🎄',
-                        'cumpleanos': '🎂',
-                        'feria': '🎡',
-                        'feriaplus': '🔥',
-                        'mundial': '⚽'
+                    const eventoIconos = {
+                        halloween: 'ghost', navidad: 'gift', cumpleanos: 'cake',
+                        feria: 'party-popper', feriaplus: 'flame', mundial: 'trophy'
                     };
-                    const emoji = eventoEmojis[proj.evento] || '🎮';
+                    const icono = eventoIconos[proj.evento] || 'gamepad-2';
                     const badge = document.createElement('span');
                     badge.className = 'event-badge';
-                    badge.textContent = emoji;
+                    badge.innerHTML = '<img class="tm-icon" src="https://api.iconify.design/lucide/' + icono + '.svg" alt="" onerror="this.onerror=null;this.src=\'/assets/icons/fallback.svg\'">';
                     badge.title = `Exclusivo de ${proj.evento.charAt(0).toUpperCase() + proj.evento.slice(1)}`;
                     nameDiv.appendChild(badge);
                 }
@@ -1344,8 +1340,8 @@
         // ============================================================
         (function() {
             const CONFIG = {
-                logoImage: null,
-                logoEmoji: '🎮',
+                logoImage: '/assets/icons/tecnomath-mark.svg',
+                logoEmoji: 'TM',
                 logoSize: 0.25,
                 logoBackground: 'white',
                 logoBorderRadius: 0.15,
