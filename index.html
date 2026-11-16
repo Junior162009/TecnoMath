@@ -592,7 +592,7 @@
             *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; }
         }
     </style>
-    <link rel="stylesheet" href="assets/css/tecnomath-home-refresh.css?v=6">
+    <link rel="stylesheet" href="assets/css/tecnomath-home-refresh.css?v=7">
     <script src="js/games-loader.js?v=1" defer></script>
     <!-- Metricool: seguimiento de visitas aislado para no crear funciones globales. -->
     <script>
@@ -1153,16 +1153,16 @@
             categories.forEach(cat => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn' + (cat === 'todos' ? ' active' : '');
-                btn.innerHTML = '<img class="tm-icon" src="https://api.iconify.design/lucide/' + ({todos:'globe',mates:'calculator',eco:'leaf',kids:'baby',puzzle:'puzzle',runners:'footprints',halloween:'ghost',navidad:'tree-pine',cumpleanos:'cake',feria:'ferris-wheel',mundial:'trophy'}[cat] || 'shapes') + '.svg" alt="" onerror="this.onerror=null;this.src=\'/assets/icons/fallback.svg\'"> ' + (cat === 'todos' ? 'TODOS' :
-                                  cat === 'mates' ? '➕ MATES' :
-                                  cat === 'eco' ? '🌿 ECOLOGÍA' :
-                                  cat === 'kids' ? '🐣 INFANTIL' :
-                                  cat === 'puzzle' ? '🧩 PUZZLE' :
-                                  cat === 'runners' ? '🏃 CARRERAS' :
-                                  cat === 'halloween' ? '🎃 HALLOWEEN' :
-                                  cat === 'navidad' ? '🎄 NAVIDAD' :
-                                  cat === 'cumpleanos' ? '🥳 CUMPLEAÑOS' :
-                                  cat === 'feria' ? '🎡 FERIA' :
+                btn.innerHTML = '<img class="tm-icon" src="https://api.iconify.design/lucide/' + ({todos:'globe',mates:'calculator',eco:'leaf',kids:'baby',puzzle:'puzzle',runners:'footprints',halloween:'ghost',navidad:'gift',cumpleanos:'cake',feria:'party-popper',mundial:'trophy'}[cat] || 'shapes') + '.svg" alt="" onerror="this.onerror=null;this.src=\'/assets/icons/fallback.svg\'"> ' + (cat === 'todos' ? 'TODOS' :
+                                  cat === 'mates' ? 'MATES' :
+                                  cat === 'eco' ? 'ECOLOGÍA' :
+                                  cat === 'kids' ? 'INFANTIL' :
+                                  cat === 'puzzle' ? 'PUZZLE' :
+                                  cat === 'runners' ? 'CARRERAS' :
+                                  cat === 'halloween' ? 'HALLOWEEN' :
+                                  cat === 'navidad' ? 'NAVIDAD' :
+                                  cat === 'cumpleanos' ? 'CUMPLEAÑOS' :
+                                  cat === 'feria' ? 'FERIA' :
                                   cat === 'mundial' ? 'MUNDIAL' : cat.toUpperCase());
                 btn.addEventListener('click', () => {
                     setActiveFilter(cat);
@@ -2443,6 +2443,6 @@
         console.log('🎨 Escenas temáticas de eventos activas: fondos y efectos adaptados a cada celebración.');
         console.log('👀 Juegos de eventos ocultos hasta que se active su evento correspondiente.');
     </script>
-    <script src="js/tecnomath-ui-v2.js?v=2" defer></script>
+    <script src="js/tecnomath-ui-v2.js?v=3" defer></script>
 </body>
 </html>
