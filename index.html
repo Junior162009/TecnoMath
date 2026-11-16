@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="TecnoMath es una plataforma educativa interactiva para aprender, practicar y desarrollar habilidades mediante actividades y experiencias educativas.">
     <meta name="keywords" content="educación, plataforma educativa, recursos educativos, actividades interactivas, matemáticas, ciencias, ecología, estudiantes, docentes, aprendizaje digital">
     <meta name="application-name" content="TecnoMath">
@@ -48,10 +48,10 @@
     <link rel="icon" id="dynamicFavicon" href="/assets/icons/tecnomath-mark.svg">
 
     <!-- Ruffle para Flash -->
-    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+    <script defer src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
     <!-- QRCode.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/tecnomath-ui-v2.css">
@@ -617,7 +617,7 @@
         (document.head || document.getElementsByTagName("head")[0]).appendChild(metricoolScript);
     })();
     </script>
-    <script src="/js/i18n.js" defer></script>
+    <script src="/js/i18n.js?v=2" defer></script>
 </head>
 <body>
     <header>
@@ -1272,11 +1272,11 @@
                 iconDiv.className = 'project-icon';
                 if (proj.imageUrl && proj.imageUrl.trim() !== '') {
                     const img = document.createElement('img');
-                    img.loading = index < 4 ? 'eager' : 'lazy';
+                    img.loading = index < 2 ? 'eager' : 'lazy';
                     img.decoding = 'async';
                     img.width = 70;
                     img.height = 70;
-                    if (index < 4) img.fetchPriority = 'high';
+                    if (index === 0) img.fetchPriority = 'high';
                     img.src = proj.imageUrl;
                     img.alt = proj.name;
                     img.onerror = function() { this.remove(); const span = document.createElement('span'); span.innerHTML = '<img class="tm-icon" src="https://api.iconify.design/lucide/gamepad-2.svg" alt="" onerror="this.onerror=null;this.src=\'/assets/icons/fallback.svg\'">'; iconDiv.appendChild(span); };
@@ -2354,7 +2354,17 @@
                 if (adminBtn) adminBtn.style.display = 'none';
                 if (authLink) {
                     authLink.href = 'pages/auth.html';
-                    authLink.textContent = '<img class="tm-icon" src="https://api.iconify.design/lucide/key-round.svg?color=%237cecff" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/icons/fallback.svg'"> ACCEDER';
+                    authLink.replaceChildren();
+                    const accessIcon = document.createElement('img');
+                    accessIcon.className = 'tm-icon';
+                    accessIcon.src = 'https://api.iconify.design/lucide/key-round.svg?color=%237cecff';
+                    accessIcon.alt = '';
+                    accessIcon.setAttribute('aria-hidden', 'true');
+                    accessIcon.onerror = function() {
+                        this.onerror = null;
+                        this.src = '/assets/icons/fallback.svg';
+                    };
+                    authLink.append(accessIcon, document.createTextNode(' ACCEDER'));
                     authLink.style.display = 'inline-block';
                 }
             }
@@ -2378,7 +2388,7 @@
                 adminBtn.addEventListener('click', function() {
                     const user = Tecnomath.getCurrentUser();
                     if (!user) {
-                        alert('⚠️ Debes iniciar sesión primero (usa el botón <img class="tm-icon" src="https://api.iconify.design/lucide/key-round.svg?color=%237cecff" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/icons/fallback.svg'"> ACCEDER).');
+                        alert('⚠️ Debes iniciar sesión primero (usa el botón ACCEDER).');
                         return;
                     }
                     const code = prompt('🔐 Introduce el código de administrador:');
@@ -2438,6 +2448,6 @@
         console.log('🎨 Escenas temáticas de eventos activas: fondos y efectos adaptados a cada celebración.');
         console.log('👀 Juegos de eventos ocultos hasta que se active su evento correspondiente.');
     </script>
-    <script src="js/tecnomath-ui-v2.js?v=3" defer></script>
+    <script src="js/tecnomath-ui-v2.js?v=4" defer></script>
 </body>
 </html>
