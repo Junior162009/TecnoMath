@@ -561,3 +561,47 @@ header{padding:10px clamp(14px,3vw,34px)!important}
   .sponsors-grid .sponsor-card{transition:none!important}
 }
 
+/* Los juegos patrocinados conservan exactamente el tamaño y aspecto de las tarjetas normales.
+   La única diferencia visual permanente es el borde dorado. */
+#projectsContainer .project-card.is-sponsored-game{
+  grid-column:auto!important;
+  min-height:100%!important;
+  background:var(--theme-card)!important;
+  border:1.5px solid rgba(244,201,107,.82)!important;
+  box-shadow:none!important;
+  position:relative!important;
+}
+#projectsContainer .project-card.is-sponsored-game:hover{
+  border-color:#f4c96b!important;
+  box-shadow:0 0 15px rgba(244,201,107,.2)!important;
+}
+#projectsContainer .project-card.is-sponsored-game::after{display:none!important;content:none!important}
+#projectsContainer .project-card.is-sponsored-game .project-icon{
+  height:154px!important;min-height:154px!important;flex-basis:154px!important;
+  background:#111d31!important;
+}
+#projectsContainer .project-card.is-sponsored-game .project-name{
+  font-size:15px!important;margin:7px 14px 0!important;
+}
+#projectsContainer .project-card.is-sponsored-game .project-desc{
+  font-size:12px!important;max-width:none!important;
+}
+@media(max-width:760px){
+  #projectsContainer .project-card.is-sponsored-game{grid-column:auto!important;min-height:235px!important}
+  #projectsContainer .project-card.is-sponsored-game .project-icon{
+    height:120px!important;min-height:120px!important;flex-basis:120px!important;
+  }
+  #projectsContainer .project-card.is-sponsored-game .project-name{
+    font-size:13px!important;margin:6px 9px 0!important;
+  }
+  #projectsContainer .project-card.is-sponsored-game .project-desc{
+    font-size:11px!important;margin:0 10px!important;
+  }
+}
+@media(max-width:380px){
+  #projectsContainer .project-card.is-sponsored-game{min-height:0!important}
+  #projectsContainer .project-card.is-sponsored-game .project-icon{
+    height:170px!important;min-height:170px!important;flex-basis:170px!important;
+  }
+}
+
