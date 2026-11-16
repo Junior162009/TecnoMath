@@ -605,3 +605,8 @@ header{padding:10px clamp(14px,3vw,34px)!important}
   }
 }
 
+
+
+/* Iconos SVG de Iconify con fallback local para navegadores antiguos. */
+.tm-icon{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.22em;object-fit:contain;flex:0 0 auto}
+.auth-link .tm-icon,.filter-btn .tm-icon{margin-right:.38em}.sponsor-icon .tm-icon{width:42px;height:42px}.project-icon .tm-icon{width:1.35em;height:1.35em}
