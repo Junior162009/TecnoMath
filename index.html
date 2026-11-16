@@ -2354,7 +2354,7 @@
                 if (adminBtn) adminBtn.style.display = 'none';
                 if (authLink) {
                     authLink.href = 'pages/auth.html';
-                    authLink.textContent = '<img class="tm-icon" src="https://api.iconify.design/lucide/key-round.svg?color=%237cecff" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/icons/fallback.svg'"> ACCEDER';
+                    authLink.innerHTML = '<img class="tm-icon" src="/assets/icons/fallback.svg" alt="" aria-hidden="true"> ACCEDER';
                     authLink.style.display = 'inline-block';
                 }
             }
