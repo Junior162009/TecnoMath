@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../../css/admin-themes.css?v=1">
 <script src="../../js/tecnomath-auth.js?v=20260920"></script>
 <script src="../../js/admin-guard.js?v=20260920"></script>
-<script src="../../js/theme-sync.js?v=4"></script>
+<script src="../../js/theme-sync.js?v=18"></script>
 </head>
 <body class="theme-center">
 <header class="tc-topbar"><a href="./index.html" class="tc-back">← Panel de administración</a><span class="tc-brand">⚡ TECNOMATH</span></header>
@@ -26,4 +26,5 @@
 </main>
 <div id="previewBar" class="tc-preview-bar" hidden><span>👁️ Estás previsualizando <strong id="previewName"></strong>. No se ha cambiado la temática global.</span><button id="exitPreview" class="tc-btn tc-btn-light" type="button">Salir de vista previa</button></div>
 <script src="../../js/admin-themes.js?v=1"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){});</script>
 </body></html>
