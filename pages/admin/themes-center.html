@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b18"><title>Centro de Temáticas · TecnoMath</title>
+<link rel="stylesheet" href="../../css/admin.css">
+<link rel="stylesheet" href="../../css/admin-themes.css?v=1">
+<script src="../../js/tecnomath-auth.js?v=20260920"></script>
+<script src="../../js/admin-guard.js?v=20260920"></script>
+<script src="../../js/theme-sync.js?v=4"></script>
+</head>
+<body class="theme-center">
+<header class="tc-topbar"><a href="./index.html" class="tc-back">← Panel de administración</a><span class="tc-brand">⚡ TECNOMATH</span></header>
+<main class="tc-main">
+<section class="tc-hero">
+  <div><p class="tc-eyebrow">PERSONALIZACIÓN GLOBAL</p><h1>🎨 Centro de Temáticas</h1><p>Explora las 13 identidades visuales, pruébalas sin afectar a los demás y aplica la elegida a la plataforma.</p></div>
+  <div class="tc-hero-art" aria-hidden="true"><span>🎨</span><i>✦</i><b>✧</b></div>
+</section>
+<section class="tc-statusbar" aria-live="polite">
+  <div class="tc-current"><span class="tc-current-icon" id="currentIcon">📚</span><div><small>TEMÁTICA GLOBAL ACTIVA</small><strong id="currentName">Cargando…</strong><small id="updatedAt">Consultando Supabase…</small></div></div>
+  <div class="tc-connection"><span class="tc-dot" id="connectionDot"></span><span id="connectionText">Conectando con Supabase…</span><button id="refreshThemes" type="button" class="tc-btn tc-btn-ghost">↻ Actualizar estado</button></div>
+</section>
+<div id="themeNotice" class="tc-notice" role="status" aria-live="polite"></div>
+<section class="tc-toolbar"><div><h2>Biblioteca de temáticas</h2><p>Selecciona una tarjeta para ver sus detalles y herramientas.</p></div><span class="tc-count">13 TEMÁTICAS ORIGINALES</span></section>
+<section id="themesGrid" class="tc-grid" aria-label="Las 13 temáticas"><div class="tc-loading">Cargando las temáticas…</div></section>
+</main>
+<div id="previewBar" class="tc-preview-bar" hidden><span>👁️ Estás previsualizando <strong id="previewName"></strong>. No se ha cambiado la temática global.</span><button id="exitPreview" class="tc-btn tc-btn-light" type="button">Salir de vista previa</button></div>
+<script src="../../js/admin-themes.js?v=1"></script>
+</body></html>
