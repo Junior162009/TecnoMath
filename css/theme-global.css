@@ -1,56 +1,67 @@
-/* TecnoMath · capa visual global de temáticas
-   Se activa desde js/theme-sync.js y utiliza variables del tema guardado en Supabase. */
+/* TecnoMath UI V2 · sistema visual global de temáticas
+   Tokens sincronizados desde Supabase por js/theme-sync.js.
+   No altera el diseño aislado del Centro de Temáticas ni los canvas de los juegos. */
 :root{
   --tm-theme-bg:var(--theme-bg,#060610);
   --tm-theme-card:var(--theme-card,#0d0d1a);
-  --tm-theme-border:var(--theme-border,#1a1a2e);
+  --tm-theme-border:var(--theme-border,#24243b);
   --tm-theme-text:var(--theme-text,#fff);
-  --tm-theme-muted:var(--theme-muted,#aaa);
+  --tm-theme-muted:var(--theme-muted,#9da0b5);
+  --tm-theme-accent:var(--neon-cyan,#00ffff);
+  --tm-theme-accent-2:var(--neon-pink,#ff00ff);
 }
-html[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]){
-  color-scheme:dark;
-  background:var(--tm-theme-bg);
-}
+html[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]){color-scheme:dark;background:var(--tm-theme-bg)}
 body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center){
-  background:var(--tm-theme-bg)!important;
-  color:var(--tm-theme-text);
+  background-color:var(--tm-theme-bg)!important;color:var(--tm-theme-text);
   transition:background-color .25s ease,color .25s ease;
 }
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(header,nav,.topbar,.navbar,.site-header,.main-header,.sidebar,.menu,.modal-content,.dropdown-menu,.panel,.card,.game-card,.stat-card,.stat,.section-card,.content-card,.dashboard-card,.feature-card,.quiz-card,.ranking-card,.profile-card,.admin-card,.quick-card,.widget,.box-card,.question-container,.game-container,.result-card,.leaderboard,.settings-card){
-  background:var(--tm-theme-card)!important;
-  border-color:var(--tm-theme-border);
-  color:var(--tm-theme-text);
+/* Capas principales del portal y de la interfaz moderna */
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  header,nav,.topbar,.navbar,.site-header,.main-header,.tm-ui-header,.tm-ui-nav,
+  .sidebar,.menu,.modal-content,.dropdown-menu,.panel,.card,.game-card,.stat-card,
+  .stat,.section-card,.content-card,.dashboard-card,.feature-card,.quiz-card,
+  .ranking-card,.profile-card,.admin-card,.quick-card,.widget,.box-card,
+  .question-container,.game-container,.result-card,.leaderboard,.settings-card,
+  .tm-ui-stat,.tm-ui-search,.tm-ui-more-panel,.project-card,.project-card-inner,
+  .sponsor-card,.tm-ui-stats
+){background-color:var(--tm-theme-card)!important;border-color:var(--tm-theme-border)!important;color:var(--tm-theme-text)}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  h1,h2,h3,h4,h5,h6,p,label,small,li,td,th,.muted,.subtitle,.description,
+  .card-description,.tm-ui-stat span,.tm-ui-hero p,.project-card p
+){color:var(--tm-theme-text)}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  .muted,.subtitle,.description,small,.text-muted,.tm-ui-stat span,.eyebrow
+){color:var(--tm-theme-muted)}
+/* Hero, navegación, controles y botones de TecnoMath UI V2 */
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  .tm-ui-hero,.hero
+){background:radial-gradient(ellipse at 15% 10%,color-mix(in srgb,var(--tm-theme-accent) 18%,transparent),transparent 48%),linear-gradient(145deg,var(--tm-theme-card),var(--tm-theme-bg))!important;border-color:var(--tm-theme-border)!important}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  .tm-ui-hero h1,.tm-ui-stats h3,.tm-ui-stats h3 span,.tm-ui-nav a.active,
+  .tm-ui-nav a:hover,.tm-ui-badge,.tm-ui-dot
+){color:var(--tm-theme-accent)!important}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  .tm-ui-btn,.tm-ui-theme,.tm-ui-menu,.tm-ui-more summary,.tm-ui-more-link,
+  button,.btn,[type="button"],[type="submit"],.button,.action-button
+){border-color:var(--tm-theme-border);color:var(--tm-theme-text)}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  .tm-ui-primary,.btn-primary,.primary-button,.start-btn,.play-btn,.action-button,
+  .btn-success,.primary
+){background:var(--tm-theme-accent-2)!important;border-color:var(--tm-theme-accent-2)!important;color:#fff!important}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  .tm-ui-secondary,.tm-ui-theme,.tm-ui-menu,.tm-ui-more summary
+){background:var(--tm-theme-card)!important;color:var(--tm-theme-accent)!important}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(
+  input,select,textarea,.tm-ui-search input
+){background-color:var(--tm-theme-bg)!important;color:var(--tm-theme-text)!important;border-color:var(--tm-theme-border)!important}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) a{color:var(--tm-theme-accent)}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(hr,table,th,td){border-color:var(--tm-theme-border)}
+/* Las tarjetas mantienen su imagen y composición; solo se armoniza su superficie */
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) .project-card{
+  box-shadow:0 12px 32px color-mix(in srgb,var(--tm-theme-accent) 9%,transparent),0 8px 24px #0005;
 }
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(h1,h2,h3,h4,h5,h6,p,label,small,li,td,th,.muted,.subtitle,.description,.card-description){
-  color:inherit;
-}
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(.muted,.subtitle,.description,small,.text-muted){
-  color:var(--tm-theme-muted);
-}
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(button,.btn,[type="button"],[type="submit"],.button,.action-button,.primary-button){
-  border-color:var(--theme-border);
-}
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(input,select,textarea){
-  background-color:var(--theme-card);
-  color:var(--theme-text);
-  border-color:var(--theme-border);
-}
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) a{
-  color:var(--neon-cyan);
-}
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(hr,table,th,td){
-  border-color:var(--theme-border);
-}
+body[data-tecnomath-theme="amoramistad"]:not(.theme-center){color-scheme:light}
+body[data-tecnomath-theme="amoramistad"]:not(.theme-center) :is(input,select,textarea){background:#fff!important;color:#351329!important}
+body[data-tecnomath-theme="amoramistad"]:not(.theme-center) :is(.tm-ui-primary,.btn-primary,.primary-button,.start-btn,.play-btn,.action-button,.btn-success,.primary){color:#351329!important}
 body[data-tecnomath-theme="normal"]{color-scheme:dark}
-@media(prefers-reduced-motion:reduce){
-  body[data-tecnomath-theme]{transition:none!important}
-}
-
-body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(.btn-primary,.primary-button,.start-btn,.play-btn,.action-button,.btn-success,.primary){
-  background:var(--neon-pink)!important;
-  border-color:var(--neon-pink)!important;
-  color:#fff!important;
-}
-body[data-tecnomath-theme="amoramistad"]:not(.theme-center) :is(.btn-primary,.primary-button,.start-btn,.play-btn,.action-button,.btn-success,.primary){
-  color:#351329!important;
-}
+@media(prefers-reduced-motion:reduce){body[data-tecnomath-theme]{transition:none!important}}
