@@ -1,0 +1,47 @@
+/* TecnoMath · capa visual global de temáticas
+   Se activa desde js/theme-sync.js y utiliza variables del tema guardado en Supabase. */
+:root{
+  --tm-theme-bg:var(--theme-bg,#060610);
+  --tm-theme-card:var(--theme-card,#0d0d1a);
+  --tm-theme-border:var(--theme-border,#1a1a2e);
+  --tm-theme-text:var(--theme-text,#fff);
+  --tm-theme-muted:var(--theme-muted,#aaa);
+}
+html[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]){
+  color-scheme:dark;
+  background:var(--tm-theme-bg);
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center){
+  background-color:var(--tm-theme-bg)!important;
+  color:var(--tm-theme-text);
+  transition:background-color .25s ease,color .25s ease;
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(header,nav,.topbar,.navbar,.site-header,.main-header,.sidebar,.menu,.modal-content,.dropdown-menu,.panel,.card,.game-card,.stat-card,.stat,.section-card,.content-card,.dashboard-card,.feature-card,.quiz-card,.ranking-card,.profile-card,.admin-card,.quick-card,.widget,.box-card,.question-container,.game-container,.result-card,.leaderboard,.settings-card){
+  background-color:var(--tm-theme-card);
+  border-color:var(--tm-theme-border);
+  color:var(--tm-theme-text);
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(h1,h2,h3,h4,h5,h6,p,label,small,li,td,th,.muted,.subtitle,.description,.card-description){
+  color:inherit;
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(.muted,.subtitle,.description,small,.text-muted){
+  color:var(--tm-theme-muted);
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(button,.btn,[type="button"],[type="submit"],.button,.action-button,.primary-button){
+  border-color:var(--theme-border);
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(input,select,textarea){
+  background-color:var(--theme-card);
+  color:var(--theme-text);
+  border-color:var(--theme-border);
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) a{
+  color:var(--neon-cyan);
+}
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(hr,table,th,td){
+  border-color:var(--theme-border);
+}
+body[data-tecnomath-theme="normal"]{color-scheme:dark}
+@media(prefers-reduced-motion:reduce){
+  body[data-tecnomath-theme]{transition:none!important}
+}
