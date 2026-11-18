@@ -1,6 +1,6 @@
-const CACHE_NAME='tecnomath-offline-v25-theme-global';
+const CACHE_NAME='tecnomath-offline-v26-theme-ui-v2';
 const OFFLINE_FALLBACK_PAGE='/index.html';
-const PRECACHE_ASSETS=['/','/index.html','/js/shared.js','/js/i18n.js','/locales/index.json','/locales/es/common.json','/locales/en/common.json','/js/firebase-config.js','/js/tecnomath-auth.js','/js/admin-guard.js','/js/theme-sync.js?v=18','/css/amor-amistad.css?v=4','/css/theme-global.css?v=1','/css/admin.css','/manifest.json','/pages/auth.html','/pages/admin/index.html','/pages/admin/games-manager.html','/js/class-a-direct-publisher.js','/pages/admin/voting-order.html','/pages/game.html','/pages/eco-collector.html','/pages/animalandia.html','/pages/ods-2048.html','/pages/coral-guardian.html','/pages/eco-barrio.html','/pages/emoji-math.html','/img/icon-192.png','/img/icon-512.png'];
+const PRECACHE_ASSETS=['/','/index.html','/js/shared.js','/js/i18n.js','/locales/index.json','/locales/es/common.json','/locales/en/common.json','/js/firebase-config.js','/js/tecnomath-auth.js','/js/admin-guard.js','/js/theme-sync.js?v=19','/css/amor-amistad.css?v=4','/css/theme-global.css?v=2','/css/admin.css','/manifest.json','/pages/auth.html','/pages/admin/index.html','/pages/admin/games-manager.html','/js/class-a-direct-publisher.js','/pages/admin/voting-order.html','/pages/game.html','/pages/eco-collector.html','/pages/animalandia.html','/pages/ods-2048.html','/pages/coral-guardian.html','/pages/eco-barrio.html','/pages/emoji-math.html','/img/icon-192.png','/img/icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(PRECACHE_ASSETS).catch(err=>console.warn('Precaché parcial:',err))));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(names=>Promise.all(names.filter(name=>name.startsWith('tecnomath-offline-')&&name!==CACHE_NAME).map(name=>caches.delete(name)))));self.clients.claim()});
 if(self.registration.navigationPreload)self.registration.navigationPreload.enable().catch(()=>{});
@@ -11,7 +11,7 @@ async function injectThemeScripts(response){
   try{
     let html=await response.text();
     html=html.replace(/<script\b[^>]*src=["'][^"']*\/js\/theme-sync\.js[^"']*["'][^>]*>\s*<\/script>/gi,'');
-    html=html.replace(/<\/body>/i,'<script src="/js/theme-sync.js?v=18"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(function(){});</script></body>');
+    html=html.replace(/<\/body>/i,'<script src="/js/theme-sync.js?v=19"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(function(){});</script></body>');
     if(!html.includes('/js/i18n.js'))html=html.replace(/<\/head>/i,'<script src="/js/i18n.js" defer></script></head>');
     const headers=new Headers(response.headers);
     headers.set('content-type','text/html; charset=utf-8');
