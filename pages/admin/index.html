@@ -85,7 +85,7 @@ body{background:radial-gradient(circle at 15% 0%,#12122a 0,transparent 34%),var(
   const $=id=>document.getElementById(id);
   let db=null,adminUser=null,adminProfile=null,users=[],progressRows=[],eventData={},logs=[];
 
-  const THEMES={normal:'📚 Normal',halloween:'🎃 Halloween',navidad:'🎄 Navidad',verano:'☀️ Verano',mundial:'🏆 Mundial',regreso:'🎒 Regreso a clases'};
+  const THEMES={normal:'📚 Normal',halloween:'🎃 Halloween',navidad:'🎄 Navidad',verano:'☀️ Verano',mundial:'🏆 Mundial',regreso:'🎒 Regreso a clases',cumpleanos:'🥳 Cumpleaños',feria:'🎡 Feria',feriaplus:'🔥 Feria Plus',primavera:'🌸 Primavera',espacio:'🚀 Espacio',ciencia:'🔬 Ciencia',amoramistad:'💖 Amor & Amistad'};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const notify=(t,type='ok')=>{$('message').textContent=t;$('message').className='message '+type};
   const date=v=>{if(!v)return'—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('es-CO',{dateStyle:'short',timeStyle:'short'})};
