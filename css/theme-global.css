@@ -196,4 +196,4 @@ body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-cente
 .tm-theme-emoji-rain{position:fixed;inset:0;z-index:9996;overflow:hidden;pointer-events:none;contain:layout paint}
 .tm-theme-emoji-rain .tm-theme-emoji{position:absolute;top:-12vh;left:var(--tm-left);font-size:var(--tm-size);line-height:1;opacity:0;filter:drop-shadow(0 3px 8px #0006);animation:tmThemeEmojiFall var(--tm-duration) linear var(--tm-delay) infinite;will-change:transform,opacity}
 @keyframes tmThemeEmojiFall{0%{transform:translate3d(0,-8vh,0) rotate(0deg);opacity:0}8%{opacity:.88}88%{opacity:.72}100%{transform:translate3d(var(--tm-drift),112vh,0) rotate(360deg);opacity:0}}
-@media(prefers-reduced-motion:reduce){.tm-theme-emoji-rain{display:none!important}}
+@media(prefers-reduced-motion:reduce){.tm-theme-emoji-rain .tm-theme-emoji{animation-duration:28s!important}}
