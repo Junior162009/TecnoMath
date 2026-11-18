@@ -1,4 +1,4 @@
-const CACHE_NAME='tecnomath-offline-v24-theme-routes';
+const CACHE_NAME='tecnomath-offline-v25-theme-global';
 const OFFLINE_FALLBACK_PAGE='/index.html';
 const PRECACHE_ASSETS=['/','/index.html','/js/shared.js','/js/i18n.js','/locales/index.json','/locales/es/common.json','/locales/en/common.json','/js/firebase-config.js','/js/tecnomath-auth.js','/js/admin-guard.js','/js/theme-sync.js?v=18','/css/amor-amistad.css?v=4','/css/theme-global.css?v=1','/css/admin.css','/manifest.json','/pages/auth.html','/pages/admin/index.html','/pages/admin/games-manager.html','/js/class-a-direct-publisher.js','/pages/admin/voting-order.html','/pages/game.html','/pages/eco-collector.html','/pages/animalandia.html','/pages/ods-2048.html','/pages/coral-guardian.html','/pages/eco-barrio.html','/pages/emoji-math.html','/img/icon-192.png','/img/icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(PRECACHE_ASSETS).catch(err=>console.warn('Precaché parcial:',err))));self.skipWaiting()});
