@@ -12,12 +12,12 @@ html[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]){
   background:var(--tm-theme-bg);
 }
 body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center){
-  background-color:var(--tm-theme-bg)!important;
+  background:var(--tm-theme-bg)!important;
   color:var(--tm-theme-text);
   transition:background-color .25s ease,color .25s ease;
 }
 body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(header,nav,.topbar,.navbar,.site-header,.main-header,.sidebar,.menu,.modal-content,.dropdown-menu,.panel,.card,.game-card,.stat-card,.stat,.section-card,.content-card,.dashboard-card,.feature-card,.quiz-card,.ranking-card,.profile-card,.admin-card,.quick-card,.widget,.box-card,.question-container,.game-container,.result-card,.leaderboard,.settings-card){
-  background-color:var(--tm-theme-card);
+  background:var(--tm-theme-card)!important;
   border-color:var(--tm-theme-border);
   color:var(--tm-theme-text);
 }
@@ -44,4 +44,13 @@ body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-cente
 body[data-tecnomath-theme="normal"]{color-scheme:dark}
 @media(prefers-reduced-motion:reduce){
   body[data-tecnomath-theme]{transition:none!important}
+}
+
+body[data-tecnomath-theme]:not([data-tecnomath-theme="normal"]):not(.theme-center) :is(.btn-primary,.primary-button,.start-btn,.play-btn,.action-button,.btn-success,.primary){
+  background:var(--neon-pink)!important;
+  border-color:var(--neon-pink)!important;
+  color:#fff!important;
+}
+body[data-tecnomath-theme="amoramistad"]:not(.theme-center) :is(.btn-primary,.primary-button,.start-btn,.play-btn,.action-button,.btn-success,.primary){
+  color:#351329!important;
 }
