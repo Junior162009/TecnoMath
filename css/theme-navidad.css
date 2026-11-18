@@ -1,0 +1,180 @@
+/* TecnoMath · Tema Navidad
+   Ambientación estacional: conserva estructura, contenido, imágenes y enlaces reales.
+   Se activa únicamente cuando Supabase selecciona el tema "navidad". */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) {
+  --navidad-pine: #174b35;
+  --navidad-pine-deep: #09251b;
+  --navidad-red: #a9363e;
+  --navidad-red-soft: #d45a58;
+  --navidad-gold: #d7b56d;
+  --navidad-cream: #f5eddb;
+  background-color: #071b14 !important;
+  background-image:
+    radial-gradient(ellipse at 8% 0%, rgba(37, 104, 70, .22), transparent 34%),
+    radial-gradient(ellipse at 94% 12%, rgba(153, 48, 57, .14), transparent 30%) !important;
+  color: var(--navidad-cream);
+}
+
+/* Cabecera: sobria, cálida y reconocible */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) header {
+  background: linear-gradient(105deg, rgba(7, 31, 22, .97), rgba(15, 55, 38, .96) 55%, rgba(65, 27, 31, .94)) !important;
+  border-bottom: 1px solid rgba(215, 181, 109, .7) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .22), 0 1px 0 rgba(255, 255, 255, .04) inset !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) header::after {
+  content: "";
+  display: block;
+  height: 3px;
+  margin: 10px -2px -15px;
+  background: linear-gradient(90deg, transparent, #b83e43 12%, #d7b56d 28%, #397b54 44%, #d7b56d 61%, #b83e43 78%, transparent);
+  opacity: .72;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) h1 {
+  color: #f0d28c !important;
+  text-shadow: 0 2px 14px rgba(215, 181, 109, .2) !important;
+  animation: none !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .subtitle {
+  color: #d6c8a8 !important;
+  text-shadow: none !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) #userDisplay {
+  color: #d7e9d9 !important;
+  text-shadow: none !important;
+}
+
+/* Enlaces y controles */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .auth-link {
+  color: #f0d28c !important;
+  border-color: rgba(215, 181, 109, .58) !important;
+  background: rgba(255, 255, 255, .035) !important;
+  text-shadow: none !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .auth-link:hover {
+  background: rgba(215, 181, 109, .12) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .18) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .voting-home-btn {
+  color: #e7f1e8 !important;
+  border-color: #4c8b62 !important;
+  background: rgba(39, 104, 66, .22) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Promociones: conserva su contenido y sus imágenes */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .promo-bubble {
+  border: 1px solid rgba(215, 181, 109, .62) !important;
+  background: linear-gradient(135deg, rgba(19, 65, 43, .98), rgba(9, 35, 26, .98) 65%, rgba(77, 34, 37, .96)) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .25) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .promo-bubble h3 {
+  color: #f0d28c !important;
+  text-shadow: none !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .promo-bubble p {
+  color: #e2e8df !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .promo-bubble img {
+  border-color: #d7b56d !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .2) !important;
+}
+
+/* Patrocinadores reales: no reemplaza nombres, logos ni enlaces */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .sponsors-section {
+  border-top: 1px solid rgba(215, 181, 109, .2);
+  border-bottom: 1px solid rgba(215, 181, 109, .2);
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .sponsors-label {
+  color: #e4d4ad !important;
+  letter-spacing: 1.5px;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .sponsor-card {
+  background: linear-gradient(160deg, #123a29, #0b291e) !important;
+  border: 1px solid rgba(215, 181, 109, .36) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, .18) !important;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .sponsor-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(215, 181, 109, .8) !important;
+  box-shadow: 0 9px 22px rgba(0, 0, 0, .25) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .sponsor-icon {
+  background: #09251b !important;
+  border-color: rgba(215, 181, 109, .35) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .sponsor-name {
+  color: #f5eddb !important;
+}
+
+/* Juegos: respeta las tarjetas, portadas, títulos y acciones existentes */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .project-card,
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .project-card-inner {
+  background: linear-gradient(155deg, #123b2a, #0a281d 72%) !important;
+  border: 1px solid rgba(215, 181, 109, .3) !important;
+  border-radius: 13px !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .22) !important;
+  overflow: hidden;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .project-card:hover {
+  border-color: rgba(215, 181, 109, .78) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .3) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .project-card h2,
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .project-card h3 {
+  color: #f0d28c !important;
+  text-shadow: none !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .project-card p {
+  color: #e0e9e1 !important;
+}
+
+/* Filtros, ranking, paneles y pie de página */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .filters .filter-btn {
+  background: #103524 !important;
+  color: #e7eadd !important;
+  border: 1px solid rgba(215, 181, 109, .28) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) .filters .filter-btn:is(.active, :hover) {
+  background: #245b3d !important;
+  color: #fff4d6 !important;
+  border-color: #d7b56d !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .18) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) footer {
+  background: linear-gradient(180deg, rgba(9, 38, 27, .92), rgba(6, 24, 18, .98)) !important;
+  border-top: 1px solid rgba(215, 181, 109, .38) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) #leaderboard-panel,
+body[data-tecnomath-theme="navidad"]:not(.theme-center) #admin-panel {
+  background: #0c2c1f !important;
+  border-color: rgba(215, 181, 109, .55) !important;
+}
+
+/* Lectura y accesibilidad */
+body[data-tecnomath-theme="navidad"]:not(.theme-center) :is(input, select, textarea) {
+  background: #09271c !important;
+  color: #fff !important;
+  border-color: rgba(215, 181, 109, .42) !important;
+}
+body[data-tecnomath-theme="navidad"]:not(.theme-center) :is(a, button):focus-visible {
+  outline: 2px solid #f0d28c !important;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  body[data-tecnomath-theme="navidad"]:not(.theme-center) header::after {
+    margin-bottom: -10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-tecnomath-theme="navidad"]:not(.theme-center) *,
+  body[data-tecnomath-theme="navidad"]:not(.theme-center) *::before,
+  body[data-tecnomath-theme="navidad"]:not(.theme-center) *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
