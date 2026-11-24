@@ -565,5 +565,32 @@
     "logoStoragePath": "",
     "packageStoragePath": "",
     "packageFileName": ""
+  },
+  {
+    "id": "examen-happybander",
+    "name": "📝 Examen Happybander · 11°",
+    "desc": "Examen interactivo de 49 preguntas del proyecto empresarial Happybander.",
+    "description": "Selecciona una respuesta por pregunta, guarda tu avance, marca preguntas para revisar y consulta tu calificación y explicaciones al finalizar.",
+    "url": "games/examen-happybander/index.html",
+    "imageUrl": "",
+    "icon": "📝",
+    "category": "emprendimiento",
+    "deviceCompatibility": "both",
+    "evento": null,
+    "sourceType": "internal",
+    "status": "published",
+    "allowVoting": false,
+    "featured": true,
+    "order": 23,
+    "urlType": "internal",
+    "publishDate": "2026-11-24T22:00:00.000Z",
+    "authorName": "TecnoMath",
+    "grade": "11°",
+    "folder": "games/examen-happybander",
+    "folderPath": "games/examen-happybander",
+    "entryFile": "index.html",
+    "logoStoragePath": "",
+    "packageStoragePath": "",
+    "packageFileName": ""
   }
 ]
