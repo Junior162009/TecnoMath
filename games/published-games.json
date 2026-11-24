@@ -571,7 +571,7 @@
     "name": "📝 Examen Happybander · 11°",
     "desc": "Examen interactivo de 49 preguntas del proyecto empresarial Happybander.",
     "description": "Selecciona una respuesta por pregunta, guarda tu avance, marca preguntas para revisar y consulta tu calificación y explicaciones al finalizar.",
-    "url": "games/examen-happybander/index.html",
+    "url": "examen-happybander.html",
     "imageUrl": "",
     "icon": "📝",
     "category": "emprendimiento",
