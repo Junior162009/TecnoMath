@@ -49,4 +49,23 @@ function openModal(html){document.querySelector('#dialog').innerHTML=html;docume
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 </script>
+<script>
+/* Acceso directo al examen interactivo de 49 preguntas de Happybander. */
+(function(){
+  const href='../games/examen-happybander/';
+  function add(containerId){
+    const host=document.getElementById(containerId);
+    if(!host||host.querySelector('[data-happybander-exam]'))return;
+    const card=document.createElement('article');
+    card.className='card';card.dataset.happybanderExam='true';
+    card.innerHTML='<div class="icon">📝</div><span class="tag">Emprendimiento · 11°</span><h3>Examen Happybander</h3><p class="muted">Evalúa tu dominio del proyecto con 49 preguntas, calificación automática y explicación de respuestas.</p><a class="btn primary" href="'+href+'">Presentar examen →</a>';
+    host.appendChild(card);
+  }
+  function install(){add('quick');add('resources');}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  const observer=new MutationObserver(install);
+  observer.observe(document.getElementById('quick')||document.body,{childList:true,subtree:false});
+  observer.observe(document.getElementById('resources')||document.body,{childList:true,subtree:false});
+})();
+</script>
 </body></html>
